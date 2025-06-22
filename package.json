@@ -1,0 +1,13 @@
+{
+  "name": "@freddymhs/n8n-flows-packages",
+  "version": "1.0.1",
+  "description": "Flujos n8n útiles para proyectos",
+  "main": "index.js",
+  "files": [
+    "flows"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  }
+}
