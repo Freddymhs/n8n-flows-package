@@ -32,7 +32,7 @@
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
-      "position": [1900, 5260],
+      "position": [1940, 5200],
       "id": "f8999f81-42be-466d-a749-3318c6889284",
       "name": "Google Gemini Chat Model1",
       "credentials": {
@@ -70,7 +70,7 @@
       },
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
-      "position": [2640, 4980],
+      "position": [2660, 4960],
       "id": "772d5a0e-3e40-4dc8-8bfd-473550b5b3b7",
       "name": "n8n2",
       "webhookId": "672cbc5d-634b-4fd8-9690-cb9091d48237",
@@ -178,17 +178,6 @@
     },
     {
       "parameters": {
-        "sessionIdType": "customKey",
-        "sessionKey": "=whatsapp"
-      },
-      "id": "4362a910-6890-4946-b248-09e75d115cbd",
-      "name": "Window Buffer Memory",
-      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
-      "position": [1720, 5260],
-      "typeVersion": 1.2
-    },
-    {
-      "parameters": {
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
@@ -208,12 +197,12 @@
         "promptType": "define",
         "text": "={{ $json.fullSummary }}",
         "options": {
-          "systemMessage": "=Responde solo el contenido nunca esto: (Resumen del correo, ok aqui esta tu resumen, analisis)\n\nPRIMERO: Analiza si el correo es específicamente sobre alguna de estas categorías laborales:\n- Entrevista laboral (invitación o coordinación de entrevistas de trabajo)\n- Prueba laboral (evaluaciones técnicas formales con instrucciones específicas para un proceso de selección)  \n- Contratación laboral (ofertas o procesos de incorporación a una empresa)\n\nSI Y SOLO SI el correo pertenece claramente a una de estas categorías, genera un resumen siguiendo este ejemplo:\n\n📨 **Resumen de (Tipo Entrevista laboral o Prueba laboral o Contratacion laboral)**  \n🕒 **Horario entrevista:**  \n   - Lunes 15/04 - 10:30 AM (GMT-5)  \n📍 **Lugar:**  \n   - Oficina Central (Calle Innovación #123)  \n   - ✅ Opción remota via Zoom  \n📆 **Fecha de envío:**  \n   - Recibido: 12/04/2024 a las 14:15  \n⏳ **Tiempo de respuesta requerido:**  \n   - ⚠️ Confirmar asistencia antes del 14/04  \n💻 **Tecnologías clave para el puesto:**  \n   - Python 🐍  \n   - AWS ☁️  \n   - React ⚛️  \n\nINSTRUCCIONES DETALLADAS PARA LA CLASIFICACIÓN CORRECTA:\n\n1. Categoriza como 'Prueba laboral' SOLAMENTE cuando:\n   - El correo es explícitamente una prueba técnica formal enviada por una empresa como parte de un proceso de selección\n   - Contiene instrucciones específicas para resolver un problema o realizar una tarea como evaluación para un puesto de trabajo\n   - Establece un plazo de entrega para completar la prueba\n   - Está claramente relacionado con un proceso de contratación en curso\n\n2. NO categorices como 'Prueba laboral':\n   - Notificaciones automáticas de plataformas como GitHub, GitLab, etc.\n   - Correos promocionales de plataformas de aprendizaje (HackerRank, Codewars, etc.) que recomiendan desafíos\n   - Notificaciones sobre commits, pull requests, o flujos de trabajo de CI/CD\n   - Newsletters técnicas o comunicaciones generales sobre tecnología\n   - Anuncios de productos o nuevas funcionalidades de aplicaciones o servicios\n   - Correos que mencionen palabras como \"test\", \"probar\" o \"experimentar\" en contexto de uso de productos\n\n3. Si el correo no corresponde a ninguna de las categorías especificadas (Entrevista laboral, Prueba laboral, Contratación laboral), responde EXACTAMENTE con esta frase sin añadir nada más:\n\n\"Este correo no corresponde a ninguna categoría de proceso laboral.\""
+          "systemMessage": "=# System Prompt PERFECTO - RESUMEN GENERATOR\n\n```\nResponde solo el contenido nunca esto: (Resumen del correo, ok aqui esta tu resumen, analisis)\n\nPRIMERO: Analiza si el correo es específicamente sobre alguna de estas categorías laborales:\n- Entrevista laboral (invitación, coordinación de entrevistas, ofertas de trabajo, contratación, onboarding)\n- Prueba laboral (evaluaciones técnicas, pruebas técnicas, challenges, o cualquier solicitud de demostración de habilidades para un proceso de selección)\n\nINSTRUCCIONES PARA CLASIFICACIÓN LABORAL:\n\n1. **Prueba laboral** incluye:\n   - Solicitudes de pruebas técnicas (formal o informal)\n   - Challenges de programación para procesos de selección\n   - Peticiones de \"realizar una prueba técnica\", \"podrías hacer un challenge\", \"necesitamos evaluar tus habilidades\"\n   - Solicitudes de demostración de habilidades técnicas\n   - Cualquier evaluación técnica relacionada con postulación laboral\n   - Keywords: \"prueba técnica\", \"challenge\", \"evaluación técnica\", \"test técnico\", \"demostrar habilidades\"\n\n2. **Entrevista laboral** incluye:\n   - Invitaciones a entrevistas de trabajo\n   - Coordinación de horarios para entrevistas laborales\n   - Confirmaciones de entrevistas\n   - Reagendamiento de entrevistas\n   - Ofertas de trabajo y contratos\n   - Procesos de incorporación/onboarding  \n   - Comunicación sobre postulaciones laborales\n   - Keywords: \"entrevista\", \"postulación\", \"oferta laboral\", \"contrato\", \"incorporación\", \"proceso de selección\"\n\nSI el correo pertenece a una de estas categorías laborales, genera un resumen usando estas palabras clave específicas:\n\n**Para PRUEBA LABORAL:**\n```\n📨 **PRUEBA TÉCNICA SOLICITADA**\n🔧 **Evaluación técnica para puesto de trabajo**\n⏰ **Plazo:** [extraer plazo mencionado]\n💻 **Tecnologías:** [mencionar tecnologías si las hay]\n📋 **Detalles de la prueba técnica:** [resumen del contenido]\n⚠️ **Acción requerida:** Completar prueba técnica para proceso de selección\n```\n\n**Para ENTREVISTA LABORAL:**\n```\n📨 **ENTREVISTA LABORAL PROGRAMADA**\n🤝 **Proceso de selección - Entrevista para puesto**\n📅 **Fecha/Hora:** [extraer fecha y hora]\n📍 **Modalidad:** [presencial/remoto/plataforma]\n🏢 **Empresa/Reclutador:** [nombre si está disponible]\n📋 **Detalles de la entrevista:** [resumen del contenido]\n⚠️ **Acción requerida:** Confirmar asistencia a entrevista\n```\n\nSi el correo NO es sobre procesos laborales (entrevistas o pruebas), entonces clasifícalo según estas otras categorías y usa estas palabras clave:\n\n**Para N8N:**\n```\n🔧 **AUTOMATIZACIÓN N8N**\n⚙️ **Workflow - Integración - Nodos**\n📋 **Contenido:** [resumen sobre n8n, automatización, flujos de trabajo]\n```\n\n**Para CURSOS/APRENDIZAJE:**\n```\n📚 **CURSO - CERTIFICACIÓN - APRENDIZAJE**\n🎓 **Capacitación técnica - Tutorial - Bootcamp**\n📋 **Contenido:** [resumen sobre educación/formación]\n```\n\n**Para EVENTOS TECH:**\n```\n🎯 **EVENTO TECNOLÓGICO - MEETUP**\n🌐 **Networking - Workshop - Conferencia tech**\n📋 **Contenido:** [resumen sobre evento/meetup/charla]\n```\n\n**Para VOLUNTARIADO:**\n```\n🤝 **VOLUNTARIADO TECNOLÓGICO**  \n💝 **Proyecto social - Comunidad - Tech for good**\n📋 **Contenido:** [resumen sobre oportunidad de voluntariado]\n```\n\nSi NO coincide con ninguna categoría anterior, responde EXACTAMENTE:\n\"Este correo no corresponde a ninguna categoría específica.\"\n```"
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.8,
-      "position": [1580, 5000],
+      "position": [1600, 5000],
       "id": "1b9df6ce-1011-427d-891a-557b79bf4c69",
       "name": "ResumeGenerator"
     },
@@ -248,7 +237,7 @@
       },
       "type": "n8n-nodes-base.whatsApp",
       "typeVersion": 1,
-      "position": [2660, 4800],
+      "position": [2760, 4780],
       "id": "cba8eb5d-cb1f-4a9a-8922-639046c444de",
       "name": "WhatsApp Business Cloud",
       "webhookId": "5eedadbc-1c0f-47df-a322-0b3f26264379",
@@ -304,6 +293,20 @@
       "type": "@n8n/n8n-nodes-langchain.textClassifier",
       "typeVersion": 1,
       "position": [1920, 5000]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.fullSummary }}",
+        "options": {
+          "systemMessage": "=Responde solo el contenido nunca esto: (Resumen del correo, ok aqui esta tu resumen, analisis)\n\nPRIMERO: Analiza si el correo es específicamente sobre alguna de estas categorías laborales:\n- Entrevista laboral (invitación o coordinación de entrevistas de trabajo)\n- Prueba laboral (evaluaciones técnicas formales con instrucciones específicas para un proceso de selección)  \n- Contratación laboral (ofertas o procesos de incorporación a una empresa)\n\nSI Y SOLO SI el correo pertenece claramente a una de estas categorías, genera un resumen siguiendo este ejemplo:\n\n📨 **Resumen de (Tipo Entrevista laboral o Prueba laboral o Contratacion laboral)**  \n🕒 **Horario entrevista:**  \n   - Lunes 15/04 - 10:30 AM (GMT-5)  \n📍 **Lugar:**  \n   - Oficina Central (Calle Innovación #123)  \n   - ✅ Opción remota via Zoom  \n📆 **Fecha de envío:**  \n   - Recibido: 12/04/2024 a las 14:15  \n⏳ **Tiempo de respuesta requerido:**  \n   - ⚠️ Confirmar asistencia antes del 14/04  \n💻 **Tecnologías clave para el puesto:**  \n   - Python 🐍  \n   - AWS ☁️  \n   - React ⚛️  \n\nINSTRUCCIONES DETALLADAS PARA LA CLASIFICACIÓN CORRECTA:\n\n1. Categoriza como 'Prueba laboral' SOLAMENTE cuando:\n   - El correo es explícitamente una prueba técnica formal enviada por una empresa como parte de un proceso de selección\n   - Contiene instrucciones específicas para resolver un problema o realizar una tarea como evaluación para un puesto de trabajo\n   - Establece un plazo de entrega para completar la prueba\n   - Está claramente relacionado con un proceso de contratación en curso\n\n2. NO categorices como 'Prueba laboral':\n   - Notificaciones automáticas de plataformas como GitHub, GitLab, etc.\n   - Correos promocionales de plataformas de aprendizaje (HackerRank, Codewars, etc.) que recomiendan desafíos\n   - Notificaciones sobre commits, pull requests, o flujos de trabajo de CI/CD\n   - Newsletters técnicas o comunicaciones generales sobre tecnología\n   - Anuncios de productos o nuevas funcionalidades de aplicaciones o servicios\n   - Correos que mencionen palabras como \"test\", \"probar\" o \"experimentar\" en contexto de uso de productos\n\n3. Si el correo no corresponde a ninguna de las categorías especificadas (Entrevista laboral, Prueba laboral, Contratación laboral), responde EXACTAMENTE con esta frase sin añadir nada más:\n\n\"Este correo no corresponde a ninguna categoría de proceso laboral.\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [0, 0],
+      "id": "28aba138-b3f8-4e96-bf36-d2a46e417a9a",
+      "name": "ResumeGenerator1"
     }
   ],
   "connections": {
@@ -361,9 +364,6 @@
           }
         ]
       ]
-    },
-    "Window Buffer Memory": {
-      "ai_memory": [[]]
     },
     "Groq Chat Model": {
       "ai_languageModel": [
