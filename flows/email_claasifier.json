@@ -1,0 +1,465 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {},
+        "options": {}
+      },
+      "id": "ee24d75f-7e66-4fa6-b16b-340ec5bf11f3",
+      "name": "GmailTrigger",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1,
+      "position": [920, 5000],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wEOM7UHhMite5RMh",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [1900, 5260],
+      "id": "f8999f81-42be-466d-a749-3318c6889284",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "FcoyrrBAEstla8p5",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "messageId": "={{$json.id}}",
+        "simple": false,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1100, 5000],
+      "id": "315129b6-80ba-419e-9953-8d2b7fb7bdb0",
+      "name": "Get Mail",
+      "webhookId": "7396c7c1-3682-452c-8cd7-9378b6121ff2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wEOM7UHhMite5RMh",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Get Mail').item.json.id }}",
+        "labelIds": ["Label_8313733782806021145"]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [2640, 4980],
+      "id": "772d5a0e-3e40-4dc8-8bfd-473550b5b3b7",
+      "name": "n8n2",
+      "webhookId": "672cbc5d-634b-4fd8-9690-cb9091d48237",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wEOM7UHhMite5RMh",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Get Mail').item.json.id }}",
+        "labelIds": ["Label_5141060722224436222"]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [3000, 5040],
+      "id": "7e39be83-77b7-49c4-96c3-bd550d26604c",
+      "name": "Voluntariado2",
+      "webhookId": "672cbc5d-634b-4fd8-9690-cb9091d48237",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wEOM7UHhMite5RMh",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Get Mail').item.json.id }}",
+        "labelIds": ["Label_1019265470811267885"]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [2880, 5020],
+      "id": "91b404c3-bc86-48de-a30b-98e35813ebf8",
+      "name": "eventos tech2",
+      "webhookId": "672cbc5d-634b-4fd8-9690-cb9091d48237",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wEOM7UHhMite5RMh",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Get Mail').item.json.id }}",
+        "labelIds": ["Label_5047642296385366054"]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [2760, 5000],
+      "id": "9d439b6d-f536-4eae-ba11-fcf8c161f619",
+      "name": "cursos2",
+      "webhookId": "672cbc5d-634b-4fd8-9690-cb9091d48237",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wEOM7UHhMite5RMh",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Get Mail').item.json.id }}",
+        "labelIds": ["Label_4251077481646509784"]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [2400, 4940],
+      "id": "f60ea6d6-a2ed-4545-89aa-7e297a7bc151",
+      "name": "Prueba tecnica2",
+      "webhookId": "672cbc5d-634b-4fd8-9690-cb9091d48237",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wEOM7UHhMite5RMh",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Get Mail').item.json.id }}",
+        "labelIds": ["Label_4395206203694279265"]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [2520, 4960],
+      "id": "4193b0af-cc02-4a4d-9b41-ac178215f079",
+      "name": "Entrevista2",
+      "webhookId": "672cbc5d-634b-4fd8-9690-cb9091d48237",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wEOM7UHhMite5RMh",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "=whatsapp"
+      },
+      "id": "4362a910-6890-4946-b248-09e75d115cbd",
+      "name": "Window Buffer Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "position": [1720, 5260],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [1580, 5260],
+      "id": "ea59cb85-05ce-4890-9810-e008954f9099",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "DnjpAnK4OE2YxV5M",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.fullSummary }}",
+        "options": {
+          "systemMessage": "=Responde solo el contenido nunca esto: (Resumen del correo, ok aqui esta tu resumen, analisis)\n\nPRIMERO: Analiza si el correo es específicamente sobre alguna de estas categorías laborales:\n- Entrevista laboral (invitación o coordinación de entrevistas de trabajo)\n- Prueba laboral (evaluaciones técnicas formales con instrucciones específicas para un proceso de selección)  \n- Contratación laboral (ofertas o procesos de incorporación a una empresa)\n\nSI Y SOLO SI el correo pertenece claramente a una de estas categorías, genera un resumen siguiendo este ejemplo:\n\n📨 **Resumen de (Tipo Entrevista laboral o Prueba laboral o Contratacion laboral)**  \n🕒 **Horario entrevista:**  \n   - Lunes 15/04 - 10:30 AM (GMT-5)  \n📍 **Lugar:**  \n   - Oficina Central (Calle Innovación #123)  \n   - ✅ Opción remota via Zoom  \n📆 **Fecha de envío:**  \n   - Recibido: 12/04/2024 a las 14:15  \n⏳ **Tiempo de respuesta requerido:**  \n   - ⚠️ Confirmar asistencia antes del 14/04  \n💻 **Tecnologías clave para el puesto:**  \n   - Python 🐍  \n   - AWS ☁️  \n   - React ⚛️  \n\nINSTRUCCIONES DETALLADAS PARA LA CLASIFICACIÓN CORRECTA:\n\n1. Categoriza como 'Prueba laboral' SOLAMENTE cuando:\n   - El correo es explícitamente una prueba técnica formal enviada por una empresa como parte de un proceso de selección\n   - Contiene instrucciones específicas para resolver un problema o realizar una tarea como evaluación para un puesto de trabajo\n   - Establece un plazo de entrega para completar la prueba\n   - Está claramente relacionado con un proceso de contratación en curso\n\n2. NO categorices como 'Prueba laboral':\n   - Notificaciones automáticas de plataformas como GitHub, GitLab, etc.\n   - Correos promocionales de plataformas de aprendizaje (HackerRank, Codewars, etc.) que recomiendan desafíos\n   - Notificaciones sobre commits, pull requests, o flujos de trabajo de CI/CD\n   - Newsletters técnicas o comunicaciones generales sobre tecnología\n   - Anuncios de productos o nuevas funcionalidades de aplicaciones o servicios\n   - Correos que mencionen palabras como \"test\", \"probar\" o \"experimentar\" en contexto de uso de productos\n\n3. Si el correo no corresponde a ninguna de las categorías especificadas (Entrevista laboral, Prueba laboral, Contratación laboral), responde EXACTAMENTE con esta frase sin añadir nada más:\n\n\"Este correo no corresponde a ninguna categoría de proceso laboral.\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [1580, 5000],
+      "id": "1b9df6ce-1011-427d-891a-557b79bf4c69",
+      "name": "ResumeGenerator"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "id": "8e1313ac-cc92-4d1a-b2b1-c4390201c0f3",
+      "name": "await 1 sec",
+      "type": "n8n-nodes-base.wait",
+      "position": [1260, 5000],
+      "webhookId": "2066b863-4526-40cf-90aa-82229895a73c",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "jsCode": "const cleanContent = (content) => {\n    if (!content) return \"\";\n    \n    return content\n        .replace(/<style[\\s\\S]*?<\\/style>|<script[\\s\\S]*?<\\/script>|<!--[\\s\\S]*?-->|<[^>]+>/gi, \" \")\n        .replace(/\\s+/g, \" \")\n        .replace(/(?:https?|ftp):\\/\\/[\\n\\S]+/gi, \" \") // Eliminar URLs no deseadas\n        .trim()\n        .substring(0, 1000); // Limitar a 1000 caracteres\n};\n\nconst iterador= (item)=>{\n\nconst metadata = {\n    from: item.json?.from?.value?.[0]?.name || \"Desconocido\",\n    fromEmail: item.json?.from?.value?.[0]?.address || \"\",\n    to: item.json?.to?.value?.[0]?.address || \"\",\n    subject: item.json?.subject || \"\",\n    date: item.json?.date ? new Date(item.json.date).toLocaleDateString(\"es-CL\", {\n        day: 'numeric',\n        month: 'numeric',\n        year: 'numeric',\n        hour: '2-digit',\n        minute: '2-digit'\n    }) : \"Fecha no disponible\",\n    messageId: item.json?.messageId || \"\"\n};\n\nconst bodyContent = {\n    html: item.json?.html || \"\",\n    text: item.json?.text || \"\",\n    cleanText: cleanContent(item.json?.text || item.json?.html || \"\")\n};\n\nconst keyElements = {\n    oportunidades: (bodyContent.cleanText.match(/(\\d+)\\s*(nuevas?|oportunidades?|ofertas?)/i) || [])[1] || \"No especificado\",\n    puesto: (bodyContent.cleanText.match(/(puesto|rol|posición)(?: de |:\\s*)([\\w\\sáéíóúñ]+)/i) || [])[2] || \"No especificado\",\n    ubicacion: (bodyContent.cleanText.match(/(en |ubicación:?)\\s*([\\w\\sáéíóúñ.,-]+)/i) || [])[2] || \"No especificada\",\n    empresas: (bodyContent.cleanText.match(/(?:empresas?|companías?):?\\s*([^.:!?]+)/i) || [])[1] || \"No especificadas\",\n    urls: [...new Set([\n        ...(bodyContent.html.match(/https?:\\/\\/[^\\s\"'<>]+/g) || []),\n        ...(bodyContent.text.match(/https?:\\/\\/[^\\s]+/g) || [])\n    ])].filter(url => \n        !url.match(/\\.(png|jpg|jpeg|gif|webp|css|js)\\b/i) &&\n        !url.includes('unsubscribe')\n    )\n};\n\nconst emailType = bodyContent.cleanText.includes('oportunidad') ? 'Oportunidad Laboral' :\n                 bodyContent.cleanText.includes('notificación') ? 'Notificación' :\n                 bodyContent.cleanText.includes('confirmación') ? 'Confirmación' :\n                 'General';\n\nconst sections = [\n    `📨 Tipo: ${emailType}`,\n    `📅 Fecha: ${metadata.date}`,\n    `👤 Remitente: ${metadata.from} <${metadata.fromEmail}>`,\n    metadata.subject && `📌 Asunto: ${metadata.subject}`,\n    keyElements.oportunidades !== \"No especificado\" && `🔢 Oportunidades: ${keyElements.oportunidades}`,\n    keyElements.puesto !== \"No especificado\" && `💼 Puesto: ${keyElements.puesto}`,\n    keyElements.ubicacion !== \"No especificada\" && `📍 Ubicación: ${keyElements.ubicacion}`,\n    keyElements.empresas !== \"No especificadas\" && `🏢 Empresas: ${keyElements.empresas}`,\n    keyElements.urls.length > 0 && `🔗 Enlaces relevantes:\\n${keyElements.urls.slice(0, 3).join('\\n')}`,\n    `📝 Contenido resumido:\\n${bodyContent.cleanText.substring(0, 300)}...`\n].filter(Boolean).join('\\n\\n');\n\nconst res= {\n    metadata,\n    contentSummary: {\n        characters: bodyContent.cleanText.length,\n        words: bodyContent.cleanText.split(/\\s+/).length,\n        detectedElements: Object.keys(keyElements).filter(k => keyElements[k] !== \"No especificado\")\n    },\n    extractedData: keyElements,\n    fullSummary: sections\n};\nreturn res;\n}\nconst extractEmailData = (item) => iterador(item)\nconst plainText = items.map(extractEmailData);\nreturn plainText;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1420, 5000],
+      "id": "8301f899-824a-4494-b9c9-7f0a62492933",
+      "name": "SimplifyJson"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "590246180842883",
+        "recipientPhoneNumber": "+56 9 7464 6583",
+        "textBody": "={{ $('ResumeGenerator').item.json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [2660, 4800],
+      "id": "cba8eb5d-cb1f-4a9a-8922-639046c444de",
+      "name": "WhatsApp Business Cloud",
+      "webhookId": "5eedadbc-1c0f-47df-a322-0b3f26264379",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "LBCxcqNpB86yNbGk",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json.output }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "."
+            },
+            {
+              "category": "Pruebas",
+              "description": "SOLO evaluaciones técnicas formales como parte de procesos de selección laboral. DEBE contener: instrucciones para resolver problemas técnicos específicos, mención explícita de evaluación para un puesto, contexto claro de proceso de selección, plazo de entrega definido. Keywords específicos al contexto laboral: 'prueba técnica para el puesto', 'evaluación para la posición', 'ejercicio de selección', 'código solicitado para la vacante', 'challenge como parte del proceso', 'resolución del problema adjunto', 'tiempo establecido para la prueba', 'etapa técnica del proceso', 'enviar solución antes del', 'evaluación de habilidades técnicas'"
+            },
+            {
+              "category": "Entrevistas",
+              "description": "SOLO comunicaciones relacionadas con entrevistas de trabajo. DEBE mencionar explícitamente: Postulación, coordinación de entrevista laboral,postulación, fecha y hora específicas para un encuentro con reclutadores/empleadores, plataforma para realizar la entrevista. Keywords específicos a entrevistas laborales: 'entrevista para el puesto', 'entrevista técnica', 'coordinar reunión para el proceso', 'link para la entrevista', 'confirmación de entrevista', 'agenda para entrevista', 'proceso de selección', 'reclutador te invita', 'siguiente fase de entrevistas', 'conversación con el equipo de', 'invitación formal para entrevista'"
+            },
+            {
+              "category": "n8n things",
+              "description": "correos sobre n8n. Keywords: automatización, workflow, integración, n8n, flujo de trabajo, nodo, trigger, acción, API, conexión, configuración"
+            },
+            {
+              "category": "Aprendizaje",
+              "description": "Cursos, certificaciones y contenido educativo. EXCLUIR si menciona pruebas en contexto laboral. Keywords: curso, certificación, tutorial, aprendizaje, capacitación, bootcamp, taller online, masterclass, webinar educativo, especialización"
+            },
+            {
+              "category": "Eventos Tech",
+              "description": "Eventos locales en Arica/Santiago/Chile/Remotos. Palabras clave: meetup, charla, workshop, networking. Keyword: meetup, charla, workshop, networking, conferencia, evento tech, hackathon, demo day, pitch, presentación, summit, congreso tecnológico"
+            },
+            {
+              "category": "Voluntariado",
+              "description": "Oportunidades de colaboración social con tecnología. Keywords: voluntario, social, comunidad, impacto, ayuda, proyecto social, sin fines de lucro, ONG, colaboración, participación, tech for good, transformación social"
+            },
+            {
+              "category": "Productos y Servicios",
+              "description": "Anuncios, actualizaciones o pruebas de productos y servicios. NO confundir con pruebas laborales. Keywords: nueva función, actualización, versión beta, probar características, testing, feedback, experimentar, lanzamiento, feature, producto, servicio, plataforma, suscripción, mejoras, usuarios, prueba de producto"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "79782f7c-56d7-4884-a30a-1824061a449b",
+      "name": "ClassifyResume1",
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1,
+      "position": [1920, 5000]
+    }
+  ],
+  "connections": {
+    "GmailTrigger": {
+      "main": [
+        [
+          {
+            "node": "Get Mail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "ClassifyResume1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Mail": {
+      "main": [
+        [
+          {
+            "node": "await 1 sec",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prueba tecnica2": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Business Cloud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Entrevista2": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Business Cloud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [[]]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "ResumeGenerator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ResumeGenerator": {
+      "main": [
+        [
+          {
+            "node": "ClassifyResume1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "await 1 sec": {
+      "main": [
+        [
+          {
+            "node": "SimplifyJson",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SimplifyJson": {
+      "main": [
+        [
+          {
+            "node": "ResumeGenerator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ClassifyResume1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Prueba tecnica2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Entrevista2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "n8n2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "cursos2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "eventos tech2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Voluntariado2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3f55899d61e9f0757f5fd34228c134c51356103eb4b39eee4e2a1670e5072098"
+  }
+}
