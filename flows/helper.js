@@ -29,6 +29,7 @@ const iterador = (item) => {
       : "Fecha no disponible",
     messageId: item.json?.messageId || "",
   };
+  z;
 
   const bodyContent = {
     html: item.json?.html || "",
