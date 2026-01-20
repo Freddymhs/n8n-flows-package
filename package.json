@@ -5,14 +5,15 @@
   "main": "index.js",
   "files": [
     "index.js",
-    "flows"
+    "flows",
+    "scripts"
   ],
   "exports": {
     ".": "./index.js",
     "./flows/*": "./flows/*.json"
   },
   "license": "MIT",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
+  "dependencies": {
+    "dotenv": "^17.2.3"
   }
 }

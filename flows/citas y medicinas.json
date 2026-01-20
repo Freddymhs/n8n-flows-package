@@ -1,0 +1,263 @@
+{
+  "name": "citas y medicinas",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [640, 320],
+      "id": "a1918dbf-01b2-4b30-8def-c14cdfa5b9d6",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [512, 320],
+      "id": "c2f25cf2-f083-4b48-9da4-16983997f22a",
+      "name": "Groq Chat Model3",
+      "credentials": {
+        "groqApi": {
+          "id": "DnjpAnK4OE2YxV5M",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "formatDate",
+        "date": "={{ $json.timestamp }}",
+        "format": "custom",
+        "customFormat": "HH:mm",
+        "outputFieldName": "readbleTimeFound",
+        "options": {
+          "timezone": true
+        }
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [192, 144],
+      "id": "362bd4a9-3ace-4035-9034-3a700f27e487",
+      "name": "Date & Time"
+    },
+    {
+      "parameters": {
+        "chatId": "-1002571880704",
+        "text": "={{ $json.output }} ",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [832, 0],
+      "id": "547714f4-176f-4bac-b5e8-f30c0710b73e",
+      "name": "Telegram",
+      "webhookId": "24a6e3e0-c259-49b2-a0da-82db3f9a3bd3",
+      "credentials": {
+        "telegramApi": {
+          "id": "CBOywzpBdmg2u1Nn",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [320, 144],
+      "id": "f9728502-d5f3-4619-ae8d-f20f095bcac3",
+      "name": "Wait",
+      "webhookId": "55a28286-fc1d-4e4c-abdc-6aa8b4eb3cd3"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Base de Datos de Eventos (Citas + Recordatorios)\nconst eventos = [\n  // { \n  //   tipo: \"cita\",\n  //   fecha: \"2025-05-08\", \n  //   hora: \"13:45\",\n  //   doctor: \"HJNC-SALA 1\",\n  //   especialidad: \"HJNC-IMAGENOLOGIA\",\n  //   ubicacion: \"Ingreso por entrada principal [DERECHA al fondo]\"\n  // },\n  // { \n  //   tipo: \"cita\",\n  //   fecha: \"2025-05-09\", \n  //   hora: \"11:30\",\n  //   doctor: \"VICTOR BARRIENTOS CASTILLO\",\n  //   especialidad: \"HJNC-TRAUMATOLOGIA\",\n  //   ubicacion: \"Entrada principal a la DERECHA Pasillo 4 Box 3\"\n  // },\n  // {\n  //   tipo: \"recordatorio\",\n  //   fecha: \"2025-05-26\",\n  //   hora: \"09:00\",\n  //   nota: \"Maximo plazo de Regreso de silla prestada\",\n  //   ubicacion: \"Oficina de asistencia social\"\n  // },\n  // {\n  //   tipo: \"cita\",\n  //   fecha: \"2025-05-13\",\n  //   hora: \"13:45\",\n  //   especialidad: \"Retiro de corchetes\",\n  //   ubicacion:\"Derecha Pasillo 2 Box 4\"\n  // },\n  // {\n  //   tipo: \"cita\",\n  //   fecha: \"2025-05-12\",\n  //   hora: \"14:00\",\n  //   especialidad: \"Control limpieza plana\",\n  //   doctor: \"enfermeras\",\n  //   ubicacion: \"Iris veliz\"\n  // },\n  // {\n  //   tipo: \"cita\",\n  //   fecha: \"2025-06-06\",\n  //   hora: \"10:00\",\n  //   doctor: \"Karim Alejandro Saba\",\n  //   especialidad: \"Control Traumatologia Ortopedia\",\n  //   ubicacion: \"NO ENCONTRADO\"\n  // }\n  {\n    tipo: \"cita\",\n    fecha: \"2025-06-10\",\n    hora: \"15:15\",\n    doctor: \"curacion simple\",\n    ubicacion: \"HJNC\"\n  },\n  {\n    tipo: \"cita\",\n    fecha: \"2025-06-13\",\n    hora: \"15:15\",\n    doctor: \"curacion simple\",\n    ubicacion: \"HJNC\"\n  },\n  {\n    tipo: \"cita\",\n    fecha: \"2025-07-07\",\n    hora: \"11:00\",\n    doctor: \"IMAGENOLOGIA\",\n    ubicacion: \"HJNC\"\n  },\n  {\n    tipo: \"cita\",\n    fecha: \"2025-07-07\",\n    hora: \"11:30\",\n    doctor: \"TRAUMATOLOGIA,alejandro saba karim\",\n    ubicacion: \"entrada por gallo segundo piso,HJNC\"\n  }\n  \n];\n\n// 1. Obtener y formatear fecha del input\nconst fechaInput = $input.first().json.readbleTimeFound.replace(/\\//g, \"-\"); // \"2025-04-26\"\nconst hoy = new Date(fechaInput);\n\n// 2. Procesar eventos\nconst eventosProximos = eventos\n  .map(evento => {\n    const fechaEvento = new Date(evento.fecha);\n    const diffDias = Math.floor((fechaEvento - hoy) / 86400000);\n    return { ...evento, diffDias };\n  })\n  .filter(evento => evento.diffDias >= 0)\n  .sort((a, b) => a.diffDias - b.diffDias);\n\n// 3. Generar mensaje dinámico\nlet mensaje = \"\";\nconst [eventosHoy, eventosFuturos] = [\n  eventosProximos.filter(e => e.diffDias === 0), \n  eventosProximos.filter(e => e.diffDias > 0)\n];\n\n// Eventos de Hoy\nif (eventosHoy.length > 0) {\n  mensaje += `⏰ **Eventos para hoy (${fechaInput}):**\\n`;\n  eventosHoy.forEach(evento => {\n    mensaje += evento.tipo === \"cita\" \n      ? `\\n▸ 🏥 ${evento.hora} - Cita con ${evento.doctor} (${evento.especialidad})\\n📍 ${evento.ubicacion}\\n`\n      : `\\n▸ 📌 ${evento.hora} - ${evento.nota}\\n📍 ${evento.ubicacion}\\n`;\n  });\n  mensaje += \"\\n────────────────\\n\";\n}\n\n// Eventos Futuros\nif (eventosFuturos.length > 0) {\n  mensaje += `📅 **Próximos eventos:**\\n`;\n  eventosFuturos.forEach(evento => {\n    const detalle = evento.tipo === \"cita\" \n      ? `Cita con ${evento.doctor}`\n      : evento.nota;\n    mensaje += `\\n▸ En ${evento.diffDias} día${evento.diffDias > 1 ? 's' : ''} (${evento.fecha}):\\n⏰ ${evento.hora} - ${detalle}`;\n  });\n}\n\n// Sin eventos\nif (mensaje === \"\") mensaje = \"No hay eventos programados.\";\n\nreturn [{ json: { output:mensaje } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [320, 0],
+      "id": "8717e39b-ac0b-4391-b075-7caf35ec21f9",
+      "name": "Citas Médicas"
+    },
+    {
+      "parameters": {
+        "operation": "formatDate",
+        "date": "={{ $json.timestamp }}",
+        "format": "yyyy/MM/dd",
+        "outputFieldName": "readbleTimeFound",
+        "options": {
+          "timezone": true
+        }
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [192, 0],
+      "id": "c78305ab-900d-48d0-ae30-29ab0d77a175",
+      "name": "Date & Time1"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 5
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0],
+      "id": "7dbd0a7a-c375-4e73-b0fe-4981a6f0c68d",
+      "name": "daily",
+      "notesInFlow": false,
+      "notes": "\n# HORARIO DE REMEDIOS\n\n## Celecoxib\n- 9 PM\n\n## Aspirina\n- 12 PM (medio dia)\n\n## Paracetamol\n- 06:00 am\n- 14:00 pm\n- 22:00 pm\n\n## Amoxicilina\n- 06:00 am\n- 14:00 pm\n- 22:00 pm\n\n## Otros medicamentos\n- 22:00 pm[Losartan] 1 vez antes de dormir\n- 22:00 pm [Puff asma] antes de dormir"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=revisa si la hora: \"{{ $json.readbleTimeFound }}\" y si corresponde a alguna accion y notifica si corresponde una de estas opciones",
+        "options": {
+          "systemMessage": "=Eres un asistente de salud que ayuda a recordar medicamentos y comidas y mas según el horario programado. Según la hora actual que te indique el usuario, debes responder con un mensaje corto y directo que le recuerde qué debe hacer en ese momento (tomar medicamento o comer , etc).\n\n# 🏥 Asistente de Salud - Algoritmo Multitarea\n\n**Instrucción Primaria:**  \nAl recibir un timestamp ISO-8601:  \n1. Extraer `HH:MM` (ignorar segundos/milisegundos)  \n2. Identificar **TODAS** las coincidencias exactas en la matriz  \n3. Si hay matches → Responder en formato lista compacta:  \n   `⏰ [HORA_EN_12H]` + `[ICONO] [ACCIÓN]` (una por línea)  \n4. Si no hay matches → Indica no se encontro accion relacionada a esta hora ⏰ [HORA_EN_12H]\n5. al hacer el desayuno elige de forma random un grupo de frutas con las que se mezclaran ya que siempre sera yoghurt+semilla  \n- frutas: platano,manzana verde,arandano, frutilla, sabila\n- fruto seco: coco, almendra,pasas,\n- semilla rapida: chia, linaza,\n- semilla lenta:  ajonjoli remojo de 1 dia (lava 2 veces, se cuela y se puede batir recien)\n\n# Horario\n| Hora  | Icono | Acción | Categoría | Anuncio Google Nest | Notas Especiales |\n|-------|-------|--------|-----------|---------------------|------------------|\n| 06:00 | 💊 | **Paracetamol + Losartán**                                             |Medicamento|✅|Con vaso de agua completo |\n| 06:30 | 🌅 | **Exposición luz Artificial + Ventilación**                           |Terapia    |❌|Tú la acompañas 15 min |\n| 07:30 | 🍳 | **Desayuno proteico:** yogurt + avena + naranja + nueces + **1 huevo** |Comida     |✅|Previene anemia |\n| 08:00 | 💊 | **CEFADROXILO + Inhalador** (Fluticasona + Salmeterol)                |Medicamento|✅|ANTIBIÓTICO - Después del desayuno |\n| 08:30 | ❤️🩹 | **Vitamina C** (500mg)                                               |Complemento|✅| |\n| 09:00 | 💊 | **CELECOXIB**                                                          |Medicamento|✅|ANTIINFLAMATORIO |\n| 09:30 | 🧠 | **Actividad mental:** lectura/puzzle/documentales                      |Mental     |✅|Previene deterioro cognitivo |\n| 10:30 | 🏋️ | **Ejercicios espalda + respiración profunda**                          |Movimiento |✅|Tú supervises técnica |\n| 12:00 | 🥗 | **Almuerzo rico en hierro:** lentejas/espinacas/carne magra + verduras |Comida     |✅|Rotación semanal anti-anemia |\n| 12:30 | ❤️🩹 | **Vitamina D3** (2000 UI) + **Calcio** + **Hierro** (días alternos)  |Complemento|✅|Hierro solo Lu-Mi-Vi |\n| 14:00 | 💊 | **Paracetamol** (solo si hay dolor)                                    |Medicamento|✅|Evaluar necesidad real |\n| 15:00 | 🌬️ | **Ventilación + Matico + hidratación**                                 |Ambiente   |❌|Tú controlas ambiente |\n| 15:00 | 😴 | **SIESTA CONTROLADA** (máx 45 min)                                     |Descanso   |✅|Alarma obligatoria |\n| 16:00 | 💊 | **CEFADROXILO + Ejercicios brazos/hombros + circulación piernas**     |Medicamento/Movimiento|✅|ANTIBIÓTICO + Incluir masaje en pierna sana |\n| 17:00 | 🍵 | **Té de hierbas** (manzanilla/boldo)                                   |Hidratación|✅| |\n| 17:30 | 🚫 | **No tomar mucho líquido**                                             |Hidratación|✅|Solo sorbos necesarios |\n| 18:30 | 🍲 | **Cena balanceada:** quinoa/pescado + verduras + fruta                 |Comida     |✅|Rica en omega-3 |\n| 19:00 | 🧠 | **Estimulación sensorial:** música suave                               |Mental     |✅|Relajación pre-nocturna |\n| 20:00 | 📺 | **Tiempo social:** TV/conversación familia                             |Social     |❌|Conexión emocional |\n| 21:00 | 💊 | **CELECOXIB + control presión arterial**                               |Medicamento|✅|ANTIINFLAMATORIO + Registrar medición |\n| 21:30 | 🛁 | **Higiene nocturna + masaje relajante**                                |Cuidado    |❌|Tú asistes |\n| 22:00 | 💊 | **Paracetamol** (solo si necesario)                                    |Medicamento|✅| |\n| 22:30 | 🌙 | **PREPARACIÓN SUEÑO:** ambiente oscuro + silencioso                    |Descanso   |✅| |\n| 00:00 | 💊 | **CEFADROXILO**                                                        |Medicamento|✅|ANTIBIÓTICO - Medianoche |\n\n\n**Ejecución Perfecta:**  \n▸ **Input:** `2025-04-26T12:00:00.000-04:00`  \n**Output:**  \n⏰ 12:00 PM\n🥗 Almuerzo\n💊 Aspirina\n\n\n▸ **Input:** `2025-04-26T16:00:00.000-04:00`  \n**Output:**  \n`⏰ 4:00 PM  \n🤸 Rutina hombros/brazos/manos`  \n\n▸ **Input:** `2025-04-26T13:30:00.000-04:00`  \n**Output:** *(Indica no se encontro accion relacionada a esta hora 13:30pm)*  \n\n**Claves del Diseño:**  \n1. **Estructura jerárquica**: Hora como título + items indentados  \n2. **Iconos categóricos**: Visualización instantánea del tipo de actividad  \n3. **Escalabilidad**: Funciona igual para 1, 2 o N eventos simultáneos  \n4. **Precisión milimétrica**: Sólo activa en matches exactos (`HH:MM`)  \n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [512, 144],
+      "id": "1b1ee222-d712-4740-bc2e-43c6b6a43255",
+      "name": "Bot recuperacion"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 30
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 144],
+      "id": "a64cdf63-23d2-4fdc-a74a-a6ad3bf49f04",
+      "name": "revisar horario cada 30m"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Bot recuperacion",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Bot recuperacion",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Bot recuperacion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Citas Médicas": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time1": {
+      "main": [
+        [
+          {
+            "node": "Citas Médicas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "daily": {
+      "main": [
+        [
+          {
+            "node": "Date & Time1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bot recuperacion": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "revisar horario cada 30m": {
+      "main": [
+        [
+          {
+            "node": "Date & Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "2405a329-aaf2-4893-bd3f-871c2d048b10",
+  "meta": {
+    "instanceId": "3f55899d61e9f0757f5fd34228c134c51356103eb4b39eee4e2a1670e5072098"
+  },
+  "id": "82AGce7MEXpOOmvz",
+  "tags": []
+}
