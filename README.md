@@ -10,10 +10,16 @@ Este proyecto facilita la gestión, reutilización y distribución de workflows 
 
 ```
 .
-├── flows
-│   └── email_alert.json
+├── index.js               # Carga automáticamente todos los .json de flows/
+├── example.js             # Ejemplos de uso
+├── flows/
+│   ├── email_alert.json
+│   ├── email_claasifier.json
+│   └── ... (agrega más flows aquí)
 └── package.json
 ```
+
+**Nota:** Cualquier archivo `.json` que agregues a `flows/` estará disponible automáticamente.
 
 ---
 
@@ -51,45 +57,66 @@ npm publish
 npm install @freddymhs/n8n-flows-packages
 ```
 
-3. Usa el script `import-n8n-flows.js` para importar los flujos automáticamente a tu instancia n8n.
+3. Importa los flows en tu código:
+
+```javascript
+// Importar todos los flows (se cargan automáticamente desde flows/*.json)
+const flows = require("@freddymhs/n8n-flows-packages");
+
+console.log(Object.keys(flows)); // ['email_alert', 'email_claasifier', ...]
+
+// Acceder a un flow específico
+const emailAlert = flows.email_alert;
+
+// O usar destructuring
+const {
+  email_alert,
+  email_claasifier,
+} = require("@freddymhs/n8n-flows-packages");
+```
+
+**Nota:** Los flows se cargan automáticamente. Solo agrega archivos `.json` a la carpeta `flows/` y estarán disponibles sin modificar código.
+
+4. (Opcional) Usa un script para importar los flujos automáticamente a tu instancia n8n.
 
 ```javascript
 // Requiere axios instalado: npm install axios
-const fs = require('fs');
-const path = require('path');
-const axios = require('axios');
+const fs = require("fs");
+const path = require("path");
+const axios = require("axios");
 
 // Cambia la URL y API_KEY por las de tu instancia n8n
-const N8N_URL = 'https://primary-production-085f.up.railway.app';
-const API_KEY = 'TU_API_KEY_DE_N8N';
+const N8N_URL = "https://primary-production-085f.up.railway.app";
+const API_KEY = "TU_API_KEY_DE_N8N";
 
 const FLOWS_PATH = path.resolve(
   __dirname,
-  'node_modules/@freddymhs/n8n-flows-packages/flows'
+  "node_modules/@freddymhs/n8n-flows-packages/flows",
 );
 
 async function importFlow(flowJson) {
   try {
-    const res = await axios.post(
-      `${N8N_URL}/rest/workflows/import`,
-      flowJson,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${API_KEY}`,
-        },
-      }
-    );
+    const res = await axios.post(`${N8N_URL}/rest/workflows/import`, flowJson, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${API_KEY}`,
+      },
+    });
     console.log(`Flujo importado: ${res.data.name}`);
   } catch (error) {
-    console.error('Error importando flujo:', error.response?.data || error.message);
+    console.error(
+      "Error importando flujo:",
+      error.response?.data || error.message,
+    );
   }
 }
 
 async function main() {
-  const files = fs.readdirSync(FLOWS_PATH).filter(f => f.endsWith('.json'));
+  const files = fs.readdirSync(FLOWS_PATH).filter((f) => f.endsWith(".json"));
   for (const file of files) {
-    const flowJson = JSON.parse(fs.readFileSync(path.join(FLOWS_PATH, file), 'utf-8'));
+    const flowJson = JSON.parse(
+      fs.readFileSync(path.join(FLOWS_PATH, file), "utf-8"),
+    );
     await importFlow(flowJson);
   }
 }

@@ -4,8 +4,13 @@
   "description": "Flujos n8n útiles para proyectos",
   "main": "index.js",
   "files": [
+    "index.js",
     "flows"
   ],
+  "exports": {
+    ".": "./index.js",
+    "./flows/*": "./flows/*.json"
+  },
   "license": "MIT",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
