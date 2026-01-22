@@ -1,0 +1,356 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {},
+        "options": {}
+      },
+      "id": "gmail-trigger",
+      "name": "Gmail Trigger",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1,
+      "position": [0, 304],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wEOM7UHhMite5RMh",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "messageId": "={{$json.id}}",
+        "simple": false,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [224, 304],
+      "id": "get-mail",
+      "name": "Get Mail",
+      "webhookId": "30d28ae3-6821-44fd-83ed-5c6f80b9722c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wEOM7UHhMite5RMh",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=REMITENTE: {{ $json.from }}\nASUNTO: {{ $json.subject }}\nCONTENIDO: {{ ($json.text || $json.snippet || \"\").substring(0, 1500) }}",
+        "options": {
+          "systemMessage": "Eres un filtro de emails laborales ESTRICTO. Tu trabajo es determinar si un email es una OPORTUNIDAD LABORAL REAL o SPAM.\n\nRESPONDE UNICAMENTE: REAL o SPAM (una sola palabra)\n\nES REAL SOLO SI:\n1. Es comunicacion DIRECTA hacia el destinatario (no masiva)\n2. El remitente es una PERSONA identificable (nombre@empresa.com)\n3. Hay INTENCION CLARA de: coordinar entrevista, enviar prueba tecnica, solicitar documentos para continuar proceso, iniciar conversacion sobre oportunidad especifica\n\nES SPAM SI:\n1. Es de plataforma (LinkedIn, Indeed, Computrabajo, Glassdoor, GetOnBoard, Jooble)\n2. Es alerta: X nuevas ofertas, ofertas que coinciden, job alert\n3. Es newsletter/blog que MENCIONA entrevistas\n4. Es confirmacion de aplicacion sin accion requerida\n5. Es notificacion de plataforma\n6. El remitente es noreply@, alert@, notifications@, jobalerts@"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [448, 304],
+      "id": "ai-filter",
+      "name": "AI Filtro SPAM"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [448, 496],
+      "id": "gemini-filter",
+      "name": "Gemini Filter",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "FcoyrrBAEstla8p5",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.output}}",
+              "operation": "contains",
+              "value2": "REAL"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [672, 304],
+      "id": "if-real",
+      "name": "Es Real?"
+    },
+    {
+      "parameters": {
+        "inputText": "=REMITENTE: {{ $(\"Get Mail\").item.json.from }}\nASUNTO: {{ $(\"Get Mail\").item.json.subject }}\nCONTENIDO: {{ ($(\"Get Mail\").item.json.text || $(\"Get Mail\").item.json.snippet || \"\").substring(0, 1500) }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "Entrevista",
+              "description": "Email sobre entrevista laboral: invitacion, coordinacion fecha/hora, link videollamada, confirmacion entrevista"
+            },
+            {
+              "category": "Prueba_Tecnica",
+              "description": "Email sobre prueba tecnica: challenge, instrucciones evaluacion, plazo, repositorio, assessment"
+            },
+            {
+              "category": "Oportunidad",
+              "description": "Email sobre oportunidad laboral: propuesta trabajo, oferta puesto, solicitud CV, contacto inicial reclutador"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "classifier",
+      "name": "Clasificar Tipo",
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1,
+      "position": [880, 272]
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [880, 480],
+      "id": "gemini-class",
+      "name": "Gemini Classifier",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "FcoyrrBAEstla8p5",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $(\"Get Mail\").item.json.id }}",
+        "labelIds": ["Label_4395206203694279265"]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1200, 112],
+      "id": "label-entrevista",
+      "name": "Label Entrevista",
+      "webhookId": "16cfe552-4110-4aa2-b990-cbe9eca40f41",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wEOM7UHhMite5RMh",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $(\"Get Mail\").item.json.id }}",
+        "labelIds": ["Label_4251077481646509784"]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1328, 336],
+      "id": "label-prueba",
+      "name": "Label Prueba",
+      "webhookId": "fa01dce1-02c6-4293-9cf9-9d94e7cd836f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wEOM7UHhMite5RMh",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "phoneNumberId": "590246180842883",
+        "recipientPhoneNumber": "+56 9 7464 6583",
+        "template": "entrevista_o_prueba_laboral|es_CL",
+        "components": {
+          "component": [
+            {
+              "bodyParameters": {
+                "parameter": [
+                  {
+                    "text": "={{ $json.snippet }}"
+                  },
+                  {
+                    "text": "=."
+                  },
+                  {
+                    "text": "=."
+                  },
+                  {
+                    "text": "=."
+                  },
+                  {
+                    "text": "=."
+                  },
+                  {
+                    "text": "=."
+                  },
+                  {
+                    "text": "=."
+                  },
+                  {
+                    "text": "=."
+                  },
+                  {
+                    "text": "=."
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [1600, -144],
+      "id": "5d2c13cf-31d9-445b-8bd1-4c65a5f2cae7",
+      "name": "WhatsApp Business Cloud4",
+      "webhookId": "c98b2903-9c45-4c97-b23a-ddf17a6a56a1",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "LBCxcqNpB86yNbGk",
+          "name": "WhatsApp account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Mail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Mail": {
+      "main": [
+        [
+          {
+            "node": "AI Filtro SPAM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Filtro SPAM": {
+      "main": [
+        [
+          {
+            "node": "Es Real?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini Filter": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Filtro SPAM",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Es Real?": {
+      "main": [
+        [
+          {
+            "node": "Clasificar Tipo",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Clasificar Tipo": {
+      "main": [
+        [
+          {
+            "node": "Label Entrevista",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Label Prueba",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Label Entrevista",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini Classifier": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Clasificar Tipo",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Label Entrevista": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Business Cloud4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Label Prueba": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Business Cloud4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "instanceId": "3f55899d61e9f0757f5fd34228c134c51356103eb4b39eee4e2a1670e5072098"
+  }
+}
