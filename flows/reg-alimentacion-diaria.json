@@ -1,0 +1,356 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c643aea9-ae54-4f9b-8c12-846902330d0f",
+              "leftValue": "={{ $json.response }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [-1744, 3888],
+      "id": "749ae3c3-9cdb-483e-914a-b63c7ace83ca",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [-784, 4064],
+      "id": "f2553514-8ea1-48d5-922e-85c9447eea40",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "DnjpAnK4OE2YxV5M",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json.message.text;\n\nconst allowedCreate = $input.first().json.message.from.first_name === \"Freddy M\";\nconst textFound= input.toLowerCase().includes('hoy');;\n\nconst response= allowedCreate && textFound ? true : false;\nreturn [{response}];\n"
+      },
+      "id": "ffb7b3d1-80e6-48cf-b98c-79eb3ffbb2a1",
+      "name": "valida es consumo",
+      "type": "n8n-nodes-base.code",
+      "position": [-1920, 3888],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "={{ $json.newName }}",
+        "returnAll": true,
+        "filter": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [-1120, 3888],
+      "id": "26a7bf65-8ea6-45b1-8f8c-a7f2dac087fd",
+      "name": "Google Drive1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "ufB7m5y0TrfIhP3I",
+          "name": "Google Drive account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [-1584, 3808],
+      "id": "afa2f966-bc49-4e7e-9597-f34f8441d23f",
+      "name": "Date & Time2"
+    },
+    {
+      "parameters": {
+        "operation": "formatDate",
+        "date": "={{ $json.currentDate }}",
+        "format": "custom",
+        "customFormat": "MM-dd",
+        "outputFieldName": "formattedCurrentDate",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [-1424, 3888],
+      "id": "83cb8f43-8d6f-46d2-9561-5c2ba90133a3",
+      "name": "Date & Time3"
+    },
+    {
+      "parameters": {
+        "operation": "deleteFile",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {
+          "deletePermanently": true
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [-976, 3888],
+      "id": "7ac3ecb0-25f0-4d88-9f03-55562c0040fb",
+      "name": "Google Drive2",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "ufB7m5y0TrfIhP3I",
+          "name": "Google Drive account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "createFromText",
+        "content": "={{ $json.output }}",
+        "name": "={{ $('formatted data').item.json.newName }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1g6137bE_8CT5KiENjQlmsmNta5D3mKm9",
+          "mode": "list",
+          "cachedResultName": "consumo",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1g6137bE_8CT5KiENjQlmsmNta5D3mKm9"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [-480, 3888],
+      "id": "dcb968e5-df06-473b-b316-f784a585e014",
+      "name": "Google Drive5",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "ufB7m5y0TrfIhP3I",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return {\n  newName:$input.first().json.formattedCurrentDate+\"-consumo-file\",\n  data: $('Agrega Consumo diario')?.first()?.json?.message?.text\n       }\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-1264, 3888],
+      "id": "93959662-650c-4ac1-bd36-a7a51fb1efc9",
+      "name": "formatted data"
+    },
+    {
+      "parameters": {
+        "chatId": "-4965798372",
+        "text": "=Agregado!",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [-304, 3888],
+      "id": "41cb8666-cf53-4d88-8f50-c60d3e8575ef",
+      "name": "Archivo Agregado",
+      "webhookId": "c7a159c6-2782-4683-b170-9060815d6b01",
+      "alwaysOutputData": false,
+      "retryOnFail": true,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "telegramApi": {
+          "id": "CBOywzpBdmg2u1Nn",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=inventario usado el dia de hoy: {{ $('formatted data').item.json.data }}",
+        "options": {
+          "systemMessage": "```\nConvierte registros diarios de alimentos en un resumen nutricional claro, útil para monitoreo médico, educación nutricional y seguimiento personal. Este resumen está optimizado para Freddy Huaylla (32 años, desarrollador web, IMC 30%) con tendencia a somnolencia tras comidas pesadas al mediodía.\n\n---\n\n🔹 OBJETIVO:\n\n- Identificar combinaciones de alimentos que sacien el apetito sin sobrepasar 1500 kcal diarias (ej: plátano + nueces).\n- Maximizar energía mental, claridad emocional y rendimiento cognitivo.\n- Cuidar articulaciones, sistema nervioso, cerebro y metabolismo.\n- Aplicar principios de dieta 3x1 y sistema nervioso excitado según el enfoque natural de Frank Suárez.\n- Brindar orientación educativa final sobre hábitos saludables y elección alimentaria.\n\n---\n\n🔹 FORMATO DE SALIDA (obligatorio):\n\njson\n{\n  \"resumen_diario\": {\n    \"fecha\": \"YYYY-MM-DD\",\n    \"grupos_alimenticios\": {\n      \"Vegetales\": [],\n      \"Lácteos\": [],\n      \"Frutas\": [],\n      \"Proteínas\": [],\n      \"Suplementos\": [],\n      \"Otros\": []\n    },\n    \"nutrientes_destacados\": {\n      \"Proteína\": {\"alimentos\": [], \"total\": \"Xg\"},\n      \"Calcio\": {\"alimentos\": [], \"total\": \"Xmg\"},\n      \"Omega-3\": {\"alimentos\": [], \"total\": \"Xg\"},\n      \"Vitamina D\": {\"alimentos\": []},\n      \"Vitamina K2\": {\"alimentos\": []},\n      \"Vitamina Magnesio\": {\"alimentos\": []},\n      \"Vitamina Colina\": {\"alimentos\": []},\n      \"Vitamina B12 + Complejo B\": {\"alimentos\": []},\n      \"Vitamina Colágeno\": {\"alimentos\": []},\n      \"Vitamina Zinc\": {\"alimentos\": []},\n      \"Vitamina Selenio\": {\"alimentos\": []}\n    },\n    \"impacto_funcional\": {\n      \"nivel_energia\": \"alta | media | baja\",\n      \"claridad_mental\": \"óptima | algo afectada | deficiente\",\n      \"saciedad_sin_exceso\": \"sí | no | parcialmente\",\n      \"observaciones\": \"Texto breve sobre si esta comida ayuda a mantener energía sin somnolencia\"\n    },\n    \"calorias_aproximadas\": {\n      \"total\": \"X kcal\",\n      \"desglose\": {\n        \"desayuno\": \"X kcal\",\n        \"almuerzo\": \"X kcal\",\n        \"cena\": \"X kcal\",\n        \"snacks\": \"X kcal\"\n      },\n      \"balance_objetivo\": \"X% del objetivo diario (1500 kcal)\"\n    },\n    \"educacion_nutricional\": \"Frase clara que ayude a entender qué mejorar o repetir según el día\"\n  }\n}\n\n---\n\n🔹 INSTRUCCIONES DE CONVERSIÓN:\n\n1. Clasifica cada alimento en su grupo.\n2. Identifica nutrientes clave para cerebro, articulaciones, metabolismo y sistema nervioso.\n3. Usa nombres comunes (ej: \"Huevo\", \"Pescado azul\", \"Yogur natural\").\n4. Usa cantidades prácticas (ej: 1 taza, 2 cdas, 1 filete).\n5. Usa fecha en formato **YYYY-MM-DD**.\n6. En almuerzo o mediodía, **marca si hay riesgo de somnolencia (alimentos tipo E: arroz, pan, pasta, harinas)**.\n7. Registra suplementos si se mencionan.\n8. No omitas nutrientes clave: Magnesio, Colina, D3, K2, B12, etc.\n9. En `impacto_funcional`, haz inferencias simples según combinación de alimentos.\n10. Calcula las calorías aproximadas por comida y el total diario basándote en porciones estándar.\n11. En `calorias_aproximadas`, incluye el porcentaje respecto al objetivo diario de 1500 kcal.\n12. En `educacion_nutricional`, ofrece una mini-lección útil (ej: \"Agregar vegetales mejora saciedad sin calorías\").\n\n---\n\n🔹 EJEMPLO INPUT:\n\n\"Desayuno: 2 huevos con espinaca, café negro. Snack: plátano con nueces. Almuerzo: arroz blanco con milanesa. Cena: yogur natural con linaza.\"\n\n🔹 EJEMPLO OUTPUT (resumen abreviado):\n\n{\n  \"resumen_diario\": {\n    \"fecha\": \"2024-05-15\",\n    \"grupos_alimenticios\": {\n      \"Vegetales\": [\"Espinaca (1 taza cocida)\"],\n      \"Lácteos\": [\"Yogur natural (1 taza)\"],\n      \"Frutas\": [\"Plátano (1 unidad)\"],\n      \"Proteínas\": [\"Huevo (2 unidades)\", \"Carne roja (1 porción)\"],\n      \"Suplementos\": [\"Linaza (2 cucharadas)\", \"Nueces (1 puñado)\"],\n      \"Otros\": [\"Arroz blanco (1 taza)\", \"Café negro (1 taza)\"]\n    },\n    \"nutrientes_destacados\": {\n      \"Proteína\": {\"alimentos\": [\"Huevo\", \"Carne roja\", \"Yogur\"], \"total\": \"≈35g\"},\n      \"Omega-3\": {\"alimentos\": [\"Linaza\", \"Nueces\"], \"total\": \"≈4g\"},\n      \"Vitamina D\": {\"alimentos\": [\"Huevo\", \"Yogur\"]},\n      \"Vitamina Magnesio\": {\"alimentos\": [\"Espinaca\", \"Linaza\", \"Nueces\"]},\n      \"Vitamina Colina\": {\"alimentos\": [\"Huevo\"]},\n      \"Vitamina B12 + Complejo B\": {\"alimentos\": [\"Carne roja\", \"Huevo\"]},\n      \"Vitamina Colágeno\": {\"alimentos\": [\"Carne roja\"]},\n      \"Vitamina Zinc\": {\"alimentos\": [\"Carne roja\"]},\n      \"Vitamina Selenio\": {\"alimentos\": [\"Huevo\"]}\n    },\n    \"impacto_funcional\": {\n      \"nivel_energia\": \"media\",\n      \"claridad_mental\": \"algo afectada\",\n      \"saciedad_sin_exceso\": \"sí\",\n      \"observaciones\": \"El arroz con milanesa al mediodía podría causar somnolencia leve por carga glucémica.\"\n    },\n    \"calorias_aproximadas\": {\n      \"total\": \"1250 kcal\",\n      \"desglose\": {\n        \"desayuno\": \"220 kcal\",\n        \"almuerzo\": \"650 kcal\",\n        \"cena\": \"180 kcal\",\n        \"snacks\": \"200 kcal\"\n      },\n      \"balance_objetivo\": \"83% del objetivo diario (1500 kcal)\"\n    },\n    \"educacion_nutricional\": \"Reemplazar arroz por vegetales al mediodía puede mejorar energía y enfoque.\"\n  }\n}\n```"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [-800, 3888],
+      "id": "48a2dd18-9d2a-400d-b30b-22ac8722af98",
+      "name": "IA ALIMENTACION"
+    },
+    {
+      "parameters": {
+        "updates": ["message"],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [-2096, 3888],
+      "id": "89f365a1-37a4-4ba4-b27f-f6743d7f14cc",
+      "name": "Agrega Consumo diario",
+      "webhookId": "f588ff9d-fe1f-43d4-b2bc-335ca6ba07da",
+      "credentials": {
+        "telegramApi": {
+          "id": "CBOywzpBdmg2u1Nn",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Date & Time2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "IA ALIMENTACION",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "valida es consumo": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive1": {
+      "main": [
+        [
+          {
+            "node": "Google Drive2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time2": {
+      "main": [
+        [
+          {
+            "node": "Date & Time3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time3": {
+      "main": [
+        [
+          {
+            "node": "formatted data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive2": {
+      "main": [
+        [
+          {
+            "node": "IA ALIMENTACION",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive5": {
+      "main": [
+        [
+          {
+            "node": "Archivo Agregado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "formatted data": {
+      "main": [
+        [
+          {
+            "node": "Google Drive1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IA ALIMENTACION": {
+      "main": [
+        [
+          {
+            "node": "Google Drive5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agrega Consumo diario": {
+      "main": [
+        [
+          {
+            "node": "valida es consumo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3f55899d61e9f0757f5fd34228c134c51356103eb4b39eee4e2a1670e5072098"
+  }
+}

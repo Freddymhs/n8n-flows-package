@@ -1,0 +1,297 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "-consumo-file",
+        "limit": 7,
+        "filter": {
+          "includeTrashed": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [-1760, 3760],
+      "id": "ff6a107e-3447-418d-9513-a1affdbba86c",
+      "name": "Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "ufB7m5y0TrfIhP3I",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {
+          "googleFileConversion": {
+            "conversion": {
+              "docsToFormat": "text/plain"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [-1600, 3760],
+      "id": "0bdde5e9-034c-4f16-b47d-05b0e131c787",
+      "name": "Google Drive6",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "ufB7m5y0TrfIhP3I",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const newItems = [];\n\nfor (const item of $input.all()) {\n  // Verificar si tenemos datos binarios\n  const binaryPropertyName = Object.keys(item.binary || {})[0];\n  \n  if (!binaryPropertyName) {\n    // No hay datos binarios\n    newItems.push({\n      json: {\n        name: item.json.name,\n        id: item.json.id,\n        content: \"[No hay datos binarios disponibles]\",\n        mimeType: item.json.mimeType\n      }\n    });\n    continue;\n  }\n  \n  try {\n    // Intentar convertir los datos binarios a texto\n    const binary = item.binary[binaryPropertyName];\n    const content = Buffer.from(binary.data, 'base64').toString('utf-8');\n    \n    newItems.push({\n      json: {\n        name: item.json.name,\n        id: item.json.id,\n        mimeType: item.json.mimeType,\n        content: content\n      }\n    });\n  } catch (error) {\n    // Si hay error, agregar información de diagnóstico\n    newItems.push({\n      json: {\n        name: item.json.name,\n        id: item.json.id,\n        mimeType: item.json.mimeType,\n        content: \"[Error: \" + error.message + \"]\"\n      }\n    });\n  }\n}\n\nreturn {output:newItems};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-1424, 3760],
+      "id": "cbb4d6a2-7a5d-44a8-a9cf-501d25f3f356",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [6],
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [-1920, 3760],
+      "id": "a06e2bfc-f6c7-4193-b7a8-dfa6f39cad20",
+      "name": "nutricionista semanal",
+      "notesInFlow": false,
+      "notes": "\n# HORARIO DE REMEDIOS\n\n## Celecoxib\n- 9 PM\n\n## Aspirina\n- 12 PM (medio dia)\n\n## Paracetamol\n- 06:00 am\n- 14:00 pm\n- 22:00 pm\n\n## Amoxicilina\n- 06:00 am\n- 14:00 pm\n- 22:00 pm\n\n## Otros medicamentos\n- 22:00 pm[Losartan] 1 vez antes de dormir\n- 22:00 pm [Puff asma] antes de dormir"
+    },
+    {
+      "parameters": {
+        "chatId": "-4965798372",
+        "text": "={{ $('Nutricionista').item.json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [-704, 3568],
+      "id": "00364b1b-df53-4f8b-9b04-7d155e7f831d",
+      "name": "Mensaje Telegram",
+      "webhookId": "c7a159c6-2782-4683-b170-9060815d6b01",
+      "alwaysOutputData": false,
+      "retryOnFail": true,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "telegramApi": {
+          "id": "CBOywzpBdmg2u1Nn",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": "={{ $('Code').item.json.output.length }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [-896, 3760],
+      "id": "81aef826-6501-4178-b002-2e7b9e9d4053",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "jsCode": "// return $('Google Drive').first();\nreturn $('Google Drive').all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-704, 3760],
+      "id": "39284517-42c1-4300-ba89-5aae7ecad55f",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [-1264, 3984],
+      "id": "4e5c37e8-e5ce-416b-9c05-d7002a5fbf92",
+      "name": "Groq Chat Model4",
+      "credentials": {
+        "groqApi": {
+          "id": "DnjpAnK4OE2YxV5M",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "deleteFile",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {
+          "deletePermanently": true
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [-528, 3760],
+      "id": "b8badde5-0cb1-496a-9b92-c24915543e16",
+      "name": "Limpiar archivos semanales",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "ufB7m5y0TrfIhP3I",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=- consumo es {{ $json.output }}. \n- perfil de clinico es: \n\"Freddy: {\n{\n  \"profile\": {\n    \"generated-date\": \"15 mayo 2025\",\n    \"name\": \"Freddy\",\n    \"age\": 32,\n    \"birthdate\": \"22 diciembre 1992\",\n    \"currentState\": \"Generalmente saludable con molestias intermitentes\"\n  },\n  \"chronicConditions\": [\n    {\n      \"condition\": \"Asma leve intermitente\",\n      \"details\": [\n        \"Episodios aproximadamente cada 6 meses\",\n        \"Controlado con salbutamol según necesidad\"\n      ]\n    },\n    {\n      \"condition\": \"Molestias articulares ocasionales\",\n      \"details\": [\n        \"Dolor en cadera aproximadamente cada 2 meses\",\n        \"Inflamación periódica en dedo de mano izquierda\",\n        \"Antecedentes familiares de artritis (madre)\"\n      ]\n    },\n    {\n      \"condition\": \"Trastornos del sueño\",\n      \"details\": [\n        \"Dificultad para despertar regularmente\",\n        \"Episodios de insomnio ocasional\"\n      ]\n    },\n    {\n      \"condition\": \"Dolor testicular intermitente\",\n      \"details\": [\n        \"Molestia ocasional en testículo izquierdo\",\n        \"Sin diagnóstico específico\"\n      ]\n    },\n    {\n      \"condition\": \"Ansiedad leve\",\n      \"details\": [\n        \"Episodios ocasionales\",\n        \"Sin tratamiento farmacológico actual\"\n      ]\n    }\n  ],\n  \"baseMedication\": [\n    {\n      \"medication\": \"Salbutamol (inhalador)\",\n      \"schedule\": [\n        \"Según necesidad (durante crisis asmáticas)\"\n      ],\n      \"notes\": \"Utilizar durante episodios de asma aproximadamente cada 6 meses\"\n    }\n  ],\n  \"recomended supplements to complement the foods\": [\n    {\n      \"name\": \"Vitamina C\",\n      \"dosage\": \"500 mg\",\n      \"time\": \"Con el desayuno\",\n      \"notes\": \"Consumo ocasional actual, recomendado regularizar para apoyo al sistema inmune\"\n    },\n    {\n      \"name\": \"Vitamina B12\",\n      \"dosage\": \"1000 mcg\",\n      \"time\": \"Con el desayuno\",\n      \"notes\": \"Anteriormente consumido para función cognitiva, evaluar reincorporación\"\n    },\n    {\n      \"name\": \"Magnesio\",\n      \"dosage\": \"300 mg\",\n      \"time\": \"Noche, antes de dormir\",\n      \"notes\": \"Potencial apoyo para calidad del sueño y molestias musculoesqueléticas\"\n    },\n    {\n      \"name\": \"Omega-3\",\n      \"dosage\": \"1000 mg\",\n      \"time\": \"Con almuerzo\",\n      \"notes\": \"Apoyo antiinflamatorio para molestias articulares\"\n    }\n  ],\n  \"exercises\": [\n    {\n      \"time\": \"Tardes (5 veces por semana)\",\n      \"activity\": \"Entrenamiento de fuerza (recientemente iniciado)\"\n    },\n    {\n      \"time\": \"Mañanas (recomendado)\",\n      \"activity\": \"Estiramientos suaves enfocados en zona de cadera y espalda baja\"\n    },\n    {\n      \"time\": \"2-3 veces por semana (recomendado)\",\n      \"activity\": \"Ejercicios de bajo impacto como natación o yoga para complementar entrenamiento de fuerza\"\n    }\n  ],\n  \"precautionsAndFollowUp\": {\n    \"articular\": [\n      \"Monitorear dolor de cadera e inflamación en dedo\",\n      \"Evaluar riesgo de artritis considerando antecedentes familiares\",\n      \"Implementar rutina antiinflamatoria natural\"\n    ],\n    \"respiratory\": [\n      \"Mantener inhalador de salbutamol disponible\",\n      \"Monitorear frecuencia y severidad de crisis asmáticas\"\n    ],\n    \"urological\": [\n      \"Evaluar causa de dolor testicular intermitente\",\n      \"Descartar varicocele u otra condición urológica\"\n    ],\n    \"sleep\": [\n      \"Establecer rutina de sueño regular\",\n      \"Técnicas de higiene del sueño para manejar insomnio\",\n      \"Evaluar calidad del sueño y su impacto en energía diurna\"\n    ],\n    \"mental\": [\n      \"Técnicas de manejo de ansiedad como respiración y mindfulness\",\n      \"Monitorear si episodios de ansiedad aumentan en frecuencia o intensidad\"\n    ],\n    \"medicalFollowUp\": [\n      \"Evaluación general con énfasis en sistema musculoesquelético\",\n      \"Valoración urológica para descartar condiciones específicas\",\n      \"Control neumológico para evaluar estado actual del asma\",\n      \"Potencial evaluación neurológica si dificultades de despertar persisten\"\n    ]\n  }\n}\n}\"",
+        "options": {
+          "systemMessage": "{\n  \"system_prompt\":\n\"*Revisa mi perfil en formato JSON y tambien mi consumo que es un array de datos que cada item del array es equivalente a 1 dia real de consumo.*\n\nEres un nutricionista especializado en metabolismo, enfoque mental y salud integral al estilo de Frank Suárez. Recibirás 7 reportes diarios en formato JSON generados a partir de la alimentación/consumo.\n\nTu misión es entregar un **informe semanal optimizado, corto y accionable**, que ayude a Freddy a:\n- Mantener enfoque mental\n- Comer bien sin pasarse de las 1500 kcal/día\n- Cuidar su metabolismo y motivación\n- Ser una mejor versión de sí mismo cada semana\n\n**Alimentos a considerar:**\n- Pan\n- Avena\n- Tomate\n- Carne para hamburguesa\n- Pollo apanado (300g)\n- Pepino\n- Arroz\n- Fideos\n- Nueces\n- Zanahoria\n- Platano\n\n**Hábitos:**\n- Desayuno energetico + cafe\n- Comida pequeña antes de las 12pm para saciar sin comer mucho\n- Comida principal entre 5-7pm (variada, abundante, alta en proteína)\n- No me interesan las frutas\n- Snacks: nueces, zanahoria cruda y platano\n- Posible intolerancia: consumo alto de carbohidratos (fideos, arroz, pan) causa somnolencia y fatiga\n\n---\nFORMATO DE RESPUESTA:\n*Mira Freddy, en base a tus 7 reportes de esta semana, aquí va tu análisis:*\n\n✔️ *Lo que estás haciendo bien para tu objetivo*:\n- *[x]* Ingresos adecuados de proteína en el desayuno (ej. huevo, yogur).\n- *[x]* Combinaciones tipo plátano + nueces que sostienen energía y saciedad.\n- *[x]* Evitaste harinas al mediodía en la mayoría de los días.\n\n*Cosas que no ayudaron a tu meta de enfoque y control calórico*:\n- Arroz blanco presente en 3 de 7 días → posible bajón energético.\n- Faltaron vegetales verdes (ej. espinaca, acelga) en 5 días.\n- Pocas fuentes de omega-3, colina y magnesio en días clave.\n\n*Qué puedes hacer esta semana para mejorar*:\n- *Agrega* espinaca, acelga o brócoli mínimo 3 veces.\n- *Incluye* huevo o yogur natural en 4 desayunos.\n- *Reemplaza* arroz por calabacín o ensalada cruda 2 días.\n- *Agrega* linaza o sardinas 3 veces por semana.\n- *Mantén* tu horario de comida fuerte en la tarde (¡bien hecho!).\n\nCierre motivacional:\n\\\"Freddy, tu metabolismo responde mejor cuando eliges alimentos que te enfocan sin cansarte. Sigue así. Tu mejor versión te está esperando.\\\"\n\n---\n🔹 INSTRUCCIONES INTERNAS (NO INCLUIR EN LA RESPUESTA):\n- Asegura que la respuesta sea compatible con Telegram.\n- No supongas hábitos que no están en los datos de CONSUMO ya que el perfil podria tener consumo de cosas que realmente no llevan un registro son mas bien contexto sobre la persona.\n- Todo debe estar en tono claro, directo y útil.\n- No uses más de 200 palabras.\n- Ten en cuenta sus alimentos frecuentes y hábitos específicos al hacer recomendaciones.\n- Considera su posible intolerancia a carbohidratos al analizar patrones de consumo.\n}\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [-1264, 3760],
+      "id": "07691b3e-5c73-40d3-9479-96b8a8573789",
+      "name": "Nutricionista"
+    }
+  ],
+  "connections": {
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Google Drive6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive6": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Nutricionista",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "nutricionista semanal": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mensaje Telegram": {
+      "main": [[]]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Mensaje Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Limpiar archivos semanales",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Nutricionista",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limpiar archivos semanales": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nutricionista": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3f55899d61e9f0757f5fd34228c134c51356103eb4b39eee4e2a1670e5072098"
+  }
+}

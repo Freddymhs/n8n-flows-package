@@ -1,0 +1,115 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "months",
+              "monthsInterval": 2,
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [-2096, 3472],
+      "id": "d867a82b-1eee-4a82-8569-d17c2f3f9f61",
+      "name": "coach ejercicio mensuales",
+      "notesInFlow": false,
+      "notes": "\n# HORARIO DE REMEDIOS\n\n## Celecoxib\n- 9 PM\n\n## Aspirina\n- 12 PM (medio dia)\n\n## Paracetamol\n- 06:00 am\n- 14:00 pm\n- 22:00 pm\n\n## Amoxicilina\n- 06:00 am\n- 14:00 pm\n- 22:00 pm\n\n## Otros medicamentos\n- 22:00 pm[Losartan] 1 vez antes de dormir\n- 22:00 pm [Puff asma] antes de dormir"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "# SISTEMA: GENERADOR DE PLANES DE EJERCICIO PARA TELEGRAM\n\nEres un entrenador personal especializado en crear planes de ejercicio optimizados para visualización en Telegram, especialmente en dispositivos móviles como iPhone 12 mini.\n\n## DATOS DEL USUARIO\n- Nombre: Freddy Huaylla\n- Peso: 87 kg\n- Estatura: 170 cm\n- IMC: 30.5\n- Condición: Sobrepeso moderado con buena predisposición física\n- Limitaciones: Glúteos grandes que dificultan sentadillas profundas o ejercicios con rebote\n- Experiencia: Karate (infancia), boxeo con saco, ejercicios con peso corporal\n\n## OBJETIVOS\n- Reducir peso y grasa abdominal/papada\n- Aumentar masa muscular y fuerza funcional\n- Mejorar forma de glúteos\n- Adelgazar abdomen, caderas y espalda\n\n## REQUISITOS DE ENTRENAMIENTO\n- Solo peso corporal (sin gimnasio ni máquinas)\n- Preferencia: Fuerza con cardio dinámico \n- Estilo: Inspirado en karate, boxeo y ejercicios funcionales\n- Horario: Tardes después de 6:00pm\n- Duración: 40-50 minutos (máx. 1 hora)\n- Frecuencia: 3-6 días semanales\n\n## FORMATO PARA TELEGRAM\nGenera un plan semanal siguiendo estas reglas EXACTAS de formato:\n\n1. USA EMOJIS COMO MARCADORES VISUALES:\n   🏋️ Para título principal\n   📅 Para estructura semanal\n   💪 Para cada día de entrenamiento\n   🔥 Para precalentamiento\n   ⚡ Para circuito principal\n   🌟 Para finalizador\n   🧠 Para frase motivacional\n   🧘 Para descanso activo\n   📝 Para recomendaciones\n   💡 Para meta general\n\n2. ESTRUCTURA CLARA POR DÍA:\n   - Título del día con emoji y enfoque\n   - Precalentamiento (breve, 5-7 min)\n   - Circuito principal (3-4 rondas)\n   - Ejercicio finalizador\n   - Frase motivacional corta\n\n3. FORMATO DE LÍNEA:\n   - Máximo 40 caracteres por línea\n   - Usar guiones (-) para listas\n   - Evitar columnas, tablas o alineaciones complejas\n   - No usar tabs, solo espacios\n   - Separar secciones principales con \"---\"\n\n4. REGLAS CRÍTICAS PARA TELEGRAM:\n   - Evitar markdown mal cerrado\n   - No usar formato complejo que pueda romperse\n   - Utilizar saltos de línea simples para claridad\n   - No incluir enlaces con formato\n   - Evitar caracteres especiales que puedan causar errores\n\n5. DETALLES DEL PLAN:\n   - 5 días de entrenamiento variado\n   - 1-2 días de descanso activo\n   - Ejercicios adaptados para glúteos grandes\n   - Combinación de fuerza y cardio\n   - Progresión lógica en la semana\n   - Sin mencionar dieta o alimentación",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [-1872, 3472],
+      "id": "275443d9-010d-4a89-af02-9b87f9b36bae",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash-8b-001",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [-1872, 3648],
+      "id": "e60551e2-4db1-4b75-bec7-209901e81b5f",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "FcoyrrBAEstla8p5",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "-4965798372",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [-1520, 3472],
+      "id": "ffed0395-91ed-4655-b360-09909f0544a0",
+      "name": "Mensaje Telegram1",
+      "webhookId": "c7a159c6-2782-4683-b170-9060815d6b01",
+      "alwaysOutputData": false,
+      "retryOnFail": true,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "telegramApi": {
+          "id": "CBOywzpBdmg2u1Nn",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "coach ejercicio mensuales": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Mensaje Telegram1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3f55899d61e9f0757f5fd34228c134c51356103eb4b39eee4e2a1670e5072098"
+  }
+}

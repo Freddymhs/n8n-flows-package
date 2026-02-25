@@ -1,0 +1,106 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "chatId": "-1002571880704",
+        "text": "={{ $json.output }} ",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [528, 0],
+      "id": "547714f4-176f-4bac-b5e8-f30c0710b73e",
+      "name": "Telegram",
+      "webhookId": "24a6e3e0-c259-49b2-a0da-82db3f9a3bd3",
+      "credentials": {
+        "telegramApi": {
+          "id": "CBOywzpBdmg2u1Nn",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Base de Datos de Eventos (Citas + Recordatorios)\nconst eventos = [\n  // { \n  //   tipo: \"cita\",\n  //   fecha: \"2025-05-08\", \n  //   hora: \"13:45\",\n  //   doctor: \"HJNC-SALA 1\",\n  //   especialidad: \"HJNC-IMAGENOLOGIA\",\n  //   ubicacion: \"Ingreso por entrada principal [DERECHA al fondo]\"\n  // },\n  // { \n  //   tipo: \"cita\",\n  //   fecha: \"2025-05-09\", \n  //   hora: \"11:30\",\n  //   doctor: \"VICTOR BARRIENTOS CASTILLO\",\n  //   especialidad: \"HJNC-TRAUMATOLOGIA\",\n  //   ubicacion: \"Entrada principal a la DERECHA Pasillo 4 Box 3\"\n  // },\n  // {\n  //   tipo: \"recordatorio\",\n  //   fecha: \"2025-05-26\",\n  //   hora: \"09:00\",\n  //   nota: \"Maximo plazo de Regreso de silla prestada\",\n  //   ubicacion: \"Oficina de asistencia social\"\n  // },\n  // {\n  //   tipo: \"cita\",\n  //   fecha: \"2025-05-13\",\n  //   hora: \"13:45\",\n  //   especialidad: \"Retiro de corchetes\",\n  //   ubicacion:\"Derecha Pasillo 2 Box 4\"\n  // },\n  // {\n  //   tipo: \"cita\",\n  //   fecha: \"2025-05-12\",\n  //   hora: \"14:00\",\n  //   especialidad: \"Control limpieza plana\",\n  //   doctor: \"enfermeras\",\n  //   ubicacion: \"Iris veliz\"\n  // },\n  // {\n  //   tipo: \"cita\",\n  //   fecha: \"2025-06-06\",\n  //   hora: \"10:00\",\n  //   doctor: \"Karim Alejandro Saba\",\n  //   especialidad: \"Control Traumatologia Ortopedia\",\n  //   ubicacion: \"NO ENCONTRADO\"\n  // }\n  {\n    tipo: \"cita\",\n    fecha: \"2025-06-10\",\n    hora: \"15:15\",\n    doctor: \"curacion simple\",\n    ubicacion: \"HJNC\"\n  },\n  {\n    tipo: \"cita\",\n    fecha: \"2025-06-13\",\n    hora: \"15:15\",\n    doctor: \"curacion simple\",\n    ubicacion: \"HJNC\"\n  },\n  {\n    tipo: \"cita\",\n    fecha: \"2025-07-07\",\n    hora: \"11:00\",\n    doctor: \"IMAGENOLOGIA\",\n    ubicacion: \"HJNC\"\n  },\n  {\n    tipo: \"cita\",\n    fecha: \"2025-07-07\",\n    hora: \"11:30\",\n    doctor: \"TRAUMATOLOGIA,alejandro saba karim\",\n    ubicacion: \"entrada por gallo segundo piso,HJNC\"\n  }\n  \n];\n\n// 1. Obtener y formatear fecha del input\nconst fechaInput = $input.first().json.readbleTimeFound.replace(/\\//g, \"-\"); // \"2025-04-26\"\nconst hoy = new Date(fechaInput);\n\n// 2. Procesar eventos\nconst eventosProximos = eventos\n  .map(evento => {\n    const fechaEvento = new Date(evento.fecha);\n    const diffDias = Math.floor((fechaEvento - hoy) / 86400000);\n    return { ...evento, diffDias };\n  })\n  .filter(evento => evento.diffDias >= 0)\n  .sort((a, b) => a.diffDias - b.diffDias);\n\n// 3. Generar mensaje dinámico\nlet mensaje = \"\";\nconst [eventosHoy, eventosFuturos] = [\n  eventosProximos.filter(e => e.diffDias === 0), \n  eventosProximos.filter(e => e.diffDias > 0)\n];\n\n// Eventos de Hoy\nif (eventosHoy.length > 0) {\n  mensaje += `⏰ **Eventos para hoy (${fechaInput}):**\\n`;\n  eventosHoy.forEach(evento => {\n    mensaje += evento.tipo === \"cita\" \n      ? `\\n▸ 🏥 ${evento.hora} - Cita con ${evento.doctor} (${evento.especialidad})\\n📍 ${evento.ubicacion}\\n`\n      : `\\n▸ 📌 ${evento.hora} - ${evento.nota}\\n📍 ${evento.ubicacion}\\n`;\n  });\n  mensaje += \"\\n────────────────\\n\";\n}\n\n// Eventos Futuros\nif (eventosFuturos.length > 0) {\n  mensaje += `📅 **Próximos eventos:**\\n`;\n  eventosFuturos.forEach(evento => {\n    const detalle = evento.tipo === \"cita\" \n      ? `Cita con ${evento.doctor}`\n      : evento.nota;\n    mensaje += `\\n▸ En ${evento.diffDias} día${evento.diffDias > 1 ? 's' : ''} (${evento.fecha}):\\n⏰ ${evento.hora} - ${detalle}`;\n  });\n}\n\n// Sin eventos\nif (mensaje === \"\") mensaje = \"No hay eventos programados.\";\n\nreturn [{ json: { output:mensaje } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [320, 0],
+      "id": "8717e39b-ac0b-4391-b075-7caf35ec21f9",
+      "name": "Citas Médicas"
+    },
+    {
+      "parameters": {
+        "operation": "formatDate",
+        "date": "={{ $json.timestamp }}",
+        "format": "yyyy/MM/dd",
+        "outputFieldName": "readbleTimeFound",
+        "options": {
+          "timezone": true
+        }
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [192, 0],
+      "id": "c78305ab-900d-48d0-ae30-29ab0d77a175",
+      "name": "Date & Time1"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 5
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0],
+      "id": "7dbd0a7a-c375-4e73-b0fe-4981a6f0c68d",
+      "name": "daily",
+      "notesInFlow": false,
+      "notes": "\n# HORARIO DE REMEDIOS\n\n## Celecoxib\n- 9 PM\n\n## Aspirina\n- 12 PM (medio dia)\n\n## Paracetamol\n- 06:00 am\n- 14:00 pm\n- 22:00 pm\n\n## Amoxicilina\n- 06:00 am\n- 14:00 pm\n- 22:00 pm\n\n## Otros medicamentos\n- 22:00 pm[Losartan] 1 vez antes de dormir\n- 22:00 pm [Puff asma] antes de dormir"
+    }
+  ],
+  "connections": {
+    "Citas Médicas": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time1": {
+      "main": [
+        [
+          {
+            "node": "Citas Médicas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "daily": {
+      "main": [
+        [
+          {
+            "node": "Date & Time1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "instanceId": "3f55899d61e9f0757f5fd34228c134c51356103eb4b39eee4e2a1670e5072098"
+  }
+}

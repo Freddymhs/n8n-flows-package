@@ -1,0 +1,628 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "const cleanText = (text) => {\n  if (!text || typeof text !== 'string') return 'No especificado';\n  return text.replace(/\\*\\*/g, '').replace(/^[📨🔧⏰📍🏢📋⚠️]\\s*/, '').trim();\n};\n\nconst raw = $('ResumeGenerator').first().json.output || '';\nconst lines = raw.split('\\n').filter(line => line.trim());\n\n// Valores por defecto específicos para prueba técnica\nlet tipoProcesoCompleto = 'Prueba Técnica Laboral';\nlet descripcionProceso = 'Evaluación técnica - Proceso de selección';\nlet fechaHora = 'Plazo por confirmar';\nlet modalidad = 'Modalidad por definir';\nlet empresa = 'No especificado';\nlet detalles = 'Completar prueba técnica';\nlet accionRequerida = 'Confirmar antes del plazo establecido';\nlet duracionEstimada = '45 minutos';\nlet notaImportante = 'Es fundamental completar este paso a tiempo para no quedar fuera del proceso de selección.';\n\n// Extraer información línea por línea\nlines.forEach(line => {\n  const cleanLine = line.trim();\n  \n  if (cleanLine.includes('📨')) {\n    tipoProcesoCompleto = cleanText(cleanLine.replace('📨', ''));\n  }\n  else if (cleanLine.includes('🔧')) {\n    descripcionProceso = cleanText(cleanLine.replace('🔧', ''));\n  }\n  else if (cleanLine.includes('⏰')) {\n    // Extraer la parte después de los dos puntos\n    const match = cleanLine.match(/⏰[^:]*:\\s*(.+)/);\n    fechaHora = match ? match[1].trim() : cleanText(cleanLine.replace('⏰', ''));\n  }\n  else if (cleanLine.includes('📍')) {\n    // Extraer la parte después de los dos puntos\n    const match = cleanLine.match(/📍[^:]*:\\s*(.+)/);\n    modalidad = match ? match[1].trim() : cleanText(cleanLine.replace('📍', ''));\n  }\n  else if (cleanLine.includes('🏢')) {\n    // Extraer la parte después de los dos puntos\n    const match = cleanLine.match(/🏢[^:]*:\\s*(.+)/);\n    empresa = match ? match[1].trim() : cleanText(cleanLine.replace('🏢', ''));\n  }\n  else if (cleanLine.includes('📋')) {\n    // Extraer la parte después de los dos puntos\n    const match = cleanLine.match(/📋[^:]*:\\s*(.+)/);\n    detalles = match ? match[1].trim() : cleanText(cleanLine.replace('📋', ''));\n  }\n  else if (cleanLine.includes('⚠️')) {\n    // Extraer la parte después de los dos puntos\n    const match = cleanLine.match(/⚠️[^:]*:\\s*(.+)/);\n    accionRequerida = match ? match[1].trim() : cleanText(cleanLine.replace('⚠️', ''));\n  }\n});\n\n// Detectar si hay información de duración en el texto\nconst duracionMatch = raw.match(/(\\d+)\\s*(minutos?|horas?|días?|hours?|days?|minutes?)/i);\nif (duracionMatch) {\n  duracionEstimada = `${duracionMatch[1]} ${duracionMatch[2].toLowerCase()}`;\n}\n\n// Crear array de parámetros para WhatsApp específico para prueba técnica\nconst parameters = [\n  { type: 'text', text: notaImportante },           // {{1}} - Nota de urgencia\n  { type: 'text', text: tipoProcesoCompleto },      // {{2}} - Tipo de proceso\n  { type: 'text', text: descripcionProceso },       // {{3}} - Descripción\n  { type: 'text', text: empresa },                  // {{4}} - Empresa\n  { type: 'text', text: fechaHora },                // {{5}} - Plazo\n  { type: 'text', text: modalidad },                // {{6}} - Modalidad\n  { type: 'text', text: empresa },                  // {{7}} - Empresa/Reclutador (repetido para compatibilidad)\n  { type: 'text', text: detalles },                 // {{8}} - Detalles de la prueba\n  { type: 'text', text: accionRequerida }           // {{9}} - Acción requerida\n];\n\nreturn [{\n  json: {\n    components: [{\n      type: 'body',\n      parameters\n    }]\n  }\n}];"
+      },
+      "id": "5e14592d-24a8-4409-a4f3-398c0dcaa87f",
+      "name": "Code Prueba Tecnica",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2080, 1728]
+    },
+    {
+      "parameters": {
+        "phoneNumberId": "590246180842883",
+        "recipientPhoneNumber": "+56 9 7464 6583",
+        "template": "prueba_laboral|en",
+        "components": {
+          "component": [
+            {
+              "bodyParameters": {
+                "parameter": [
+                  {
+                    "text": "={{ $json.components[0].parameters[0].text }}"
+                  },
+                  {
+                    "text": "={{ $json.components[0].parameters[1].text }}"
+                  },
+                  {
+                    "text": "={{ $json.components[0].parameters[2].text }}"
+                  },
+                  {
+                    "text": "={{ $json.components[0].parameters[3].text }}"
+                  },
+                  {
+                    "text": "={{ $json.components[0].parameters[4].text }}"
+                  },
+                  {
+                    "text": "={{ $json.components[0].parameters[5].text }}"
+                  },
+                  {
+                    "text": "={{ $json.components[0].parameters[6].text }}"
+                  },
+                  {
+                    "text": "={{ $json.components[0].parameters[7].text }}"
+                  },
+                  {
+                    "text": "={{ $json.components[0].parameters[8].text }}"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "id": "c1977e4d-de06-4156-8792-b9203234f895",
+      "name": "WhatsApp Prueba Tecnica",
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [2304, 1728],
+      "webhookId": "061b37e5-4437-4895-8369-8741b6d9566f",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "LBCxcqNpB86yNbGk",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {},
+        "options": {}
+      },
+      "id": "5a791392-fc41-4ca0-a579-e4cbca0297b3",
+      "name": "GmailTrigger",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1,
+      "position": [256, 1808],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wEOM7UHhMite5RMh",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [1280, 2016],
+      "id": "f4e162b5-cb90-415d-9f23-416c1e88979e",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "FcoyrrBAEstla8p5",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "messageId": "={{$json.id}}",
+        "simple": false,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [432, 1808],
+      "id": "44a79f3c-1131-447d-9f5e-8b48c21b138c",
+      "name": "Get Mail5",
+      "webhookId": "ab98d849-fb3e-44fc-99e7-7400ec781d0b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wEOM7UHhMite5RMh",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Get Mail5').item.json.id }}",
+        "labelIds": ["Label_8313733782806021145"]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [2032, 2336],
+      "id": "c5674f48-5e62-4236-9986-f3103f7ad09f",
+      "name": "n8n",
+      "webhookId": "2dbdc08d-93fe-47a9-922c-ef639512e84e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wEOM7UHhMite5RMh",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Get Mail5').item.json.id }}",
+        "labelIds": ["Label_5141060722224436222"]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [2048, 2192],
+      "id": "405bf666-504e-449a-8f25-d4a3ae68cd60",
+      "name": "Voluntariado",
+      "webhookId": "35850c76-9533-4df6-b6e3-5583e0ab3389",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wEOM7UHhMite5RMh",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Get Mail5').item.json.id }}",
+        "labelIds": ["Label_1019265470811267885"]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1920, 2080],
+      "id": "54208a47-a844-44aa-88aa-5e997415714f",
+      "name": "eventos tech",
+      "webhookId": "cd1a719c-e936-4f08-9739-9ad111ec35f4",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wEOM7UHhMite5RMh",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Get Mail5').item.json.id }}",
+        "labelIds": ["Label_5047642296385366054"]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1888, 2224],
+      "id": "a0309401-c95e-4a2d-883d-26aafac19af0",
+      "name": "cursos",
+      "webhookId": "5f751eea-4d96-4e16-8181-1f24f87dd111",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wEOM7UHhMite5RMh",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Get Mail5').item.json.id }}",
+        "labelIds": ["Label_4251077481646509784"]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1888, 1728],
+      "id": "d4fc68dc-efe5-4d87-ac54-6297d3cf3444",
+      "name": "Prueba tecnica",
+      "webhookId": "79e3c172-c59a-4a79-b9cc-d61fb7c8b837",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wEOM7UHhMite5RMh",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Get Mail5').item.json.id }}",
+        "labelIds": ["Label_4395206203694279265"]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1888, 1888],
+      "id": "8f10ef45-dcb9-4e36-84f8-040a2217bcf5",
+      "name": "Entrevista",
+      "webhookId": "fb164690-9d0f-494d-80f4-395db6c2c323",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wEOM7UHhMite5RMh",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [1056, 2272],
+      "id": "fefd4fc4-6280-46be-851f-45e1b3e5bb08",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "DnjpAnK4OE2YxV5M",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.fullSummary }}",
+        "options": {
+          "systemMessage": "=# System Prompt PERFECTO - RESUMEN GENERATOR\n\n```\nResponde solo el contenido nunca esto: (Resumen del correo, ok aqui esta tu resumen, analisis)\n\nPRIMERO: Analiza si el correo es específicamente sobre alguna de estas categorías laborales:\n- Entrevista laboral (invitación, coordinación de entrevistas, ofertas de trabajo, contratación, onboarding)\n- Prueba laboral (evaluaciones técnicas, pruebas técnicas, challenges, o cualquier solicitud de demostración de habilidades para un proceso de selección)\n\nINSTRUCCIONES PARA CLASIFICACIÓN LABORAL:\n\nIndicadores para detectar el tipo de clsaificacion laboral\n\nPRUEBA TÉCNICA - Buscar estas palabras clave:\n\"prueba técnica\", \"evaluación técnica\", \"test técnico\",\"código\", \"desarrollo\",\"programación\",\"repository\",\"plazo\", \"entregar\", \"completar\", \"enviar\",\"GitHub\", \"código fuente\", \"proyecto\"\n\nENTREVISTA LABORAL - Buscar estas palabras clave:\n\"entrevista\", \"reunión\", \"cita\", \"meeting\",\"fecha\", \"hora\", \"calendario\", \"agendar\",\"conocer\", \"conversar\", \"presentar\",\"Zoom\", \"Meet\", \"Teams\", \"presencial\", \"oficina\"\n\nClasificacion laboral incluye:\n```\n**Si detectas que es una PRUEBA TÉCNICA/LABORAL:**\n- [TIPO_PROCESO] = \"PRUEBA TÉCNICA SOLICITADA\"\n- [DESCRIPCION_PROCESO] = \"Evaluación técnica para puesto de trabajo\"\n- [TIEMPO_INFO] = \"Plazo\"\n- [VALOR_TIEMPO] = Extrae el plazo mencionado para completar la evaluación\n- [MODALIDAD] = Identifica si es online, por email, plataforma específica, etc.\n- [EMPRESA] = Nombre de la empresa que solicita la prueba\n- [DETALLES_TIPO] = \"Detalles de la prueba técnica\"\n- [DETALLES_CONTENIDO] = Resumen conciso de qué debe hacer en la prueba\n- [ACCION_REQUERIDA] = \"Completar prueba técnica\"\n\n**Si detectas que es una ENTREVISTA LABORAL:**\n- [TIPO_PROCESO] = \"ENTREVISTA LABORAL PROGRAMADA\"\n- [DESCRIPCION_PROCESO] = \"Proceso de selección - Entrevista para puesto\"\n- [TIEMPO_INFO] = \"Fecha/Hora\"\n- [VALOR_TIEMPO] = Extrae la fecha y hora específica de la entrevista\n- [MODALIDAD] = Identifica si es presencial, remoto, por videollamada, plataforma, etc.\n- [EMPRESA] = Nombre de la empresa o entrevistador\n- [DETALLES_TIPO] = \"Detalles de la entrevista\"\n- [DETALLES_CONTENIDO] = Resumen de qué tipo de entrevista es y qué esperar\n- [ACCION_REQUERIDA] = \"Confirmar asistencia a entrevista\"\n\nREGLAS IMPORTANTES:\n- Mantén EXACTAMENTE el formato con emojis y estructura\n- Si no encuentras información específica, usa \"[No especificado]\"\n- Sé conciso pero informativo en los detalles\n- Identifica correctamente el tipo de proceso antes de generar el resumen\n- Los corchetes [] son solo para explicar, en el resultado final no los uses\n```\n\nSI el correo pertenece a una de estas categorías laborales, genera un resumen usando estas palabras clave específicas:\n\n**Prueba laboral** o **Entrevista laboral**:\n📨 **[TIPO_PROCESO]**\n🔧 **[DESCRIPCION_PROCESO]**\n⏰ **[TIEMPO_INFO]:** [VALOR_TIEMPO]\n📍 **Modalidad:** [MODALIDAD]\n🏢 **Empresa/Reclutador:** [EMPRESA]\n📋 **[DETALLES_TIPO]:** [DETALLES_CONTENIDO]\n⚠️ **Acción requerida:** [ACCION_REQUERIDA]\n\nSi el correo NO es sobre procesos laborales (entrevistas o pruebas), entonces clasifícalo según estas otras categorías y usa estas palabras clave:\n\n**Para N8N:**\n```\n🔧 **AUTOMATIZACIÓN N8N**\n⚙️ **Workflow - Integración - Nodos**\n📋 **Contenido:** [resumen sobre n8n, automatización, flujos de trabajo]\n```\n\n**Para CURSOS/APRENDIZAJE:**\n```\n📚 **CURSO - CERTIFICACIÓN - APRENDIZAJE**\n🎓 **Capacitación técnica - Tutorial - Bootcamp**\n📋 **Contenido:** [resumen sobre educación/formación]\n```\n\n**Para EVENTOS TECH:**\n```\n🎯 **EVENTO TECNOLÓGICO - MEETUP**\n🌐 **Networking - Workshop - Conferencia tech**\n📋 **Contenido:** [resumen sobre evento/meetup/charla]\n```\n\n**Para VOLUNTARIADO:**\n```\n🤝 **VOLUNTARIADO TECNOLÓGICO**  \n💝 **Proyecto social - Comunidad - Tech for good**\n📋 **Contenido:** [resumen sobre oportunidad de voluntariado]\n```\n\nEJEMPLOS DE SALIDA ESPERADA PARA ENTREVISTA LABORAL O PRUEBA TECNICA:\n\nEjemplo 1 - Prueba Técnica:\n📨 **PRUEBA TÉCNICA SOLICITADA**\n🔧 **Evaluación técnica para puesto de trabajo**\n⏰ **Plazo:** 5 días para completar la evaluación\n📍 **Modalidad:** Online via repositorio GitHub\n🏢 **Empresa/Reclutador:** InnovaTech Solutions\n📋 **Detalles de la prueba técnica:** Desarrollar API REST con autenticación JWT y documentación Swagger\n⚠️ **Acción requerida:** Completar prueba técnica\n\nEjemplo 2 - Entrevista Laboral:\n📨 **ENTREVISTA LABORAL PROGRAMADA**\n🔧 **Proceso de selección - Entrevista para puesto**\n⏰ **Fecha/Hora:** Viernes 28 de Junio, 15:30 hrs\n📍 **Modalidad:** Videollamada por Zoom\n🏢 **Empresa/Reclutador:** Consultora TalentHub - Ana García\n📋 **Detalles de la entrevista:** Primera entrevista técnica con el equipo de desarrollo backend\n⚠️ **Acción requerida:** Confirmar asistencia a entrevista\n\n\n\nSi NO coincide con ninguna categoría anterior, responde EXACTAMENTE:\n\"Este correo no corresponde a ninguna categoría específica.\"\n```"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [944, 1808],
+      "id": "01a2e491-2ad6-46ab-9c23-2728c412aeba",
+      "name": "ResumeGenerator"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "id": "c0de8d51-8ac0-4c47-847e-c1acb8affcc4",
+      "name": "await 1 sec",
+      "type": "n8n-nodes-base.wait",
+      "position": [592, 1808],
+      "webhookId": "f4f1c210-f883-431e-834d-5dce01342b54",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "jsCode": "const cleanContent = (content) => {\n  if (!content) return \"\";\n\n  return content\n    .replace(\n      /<style[\\s\\S]*?<\\/style>|<script[\\s\\S]*?<\\/script>|<!--[\\s\\S]*?-->|<[^>]+>/gi,\n      \" \"\n    )\n    .replace(/\\s+/g, \" \")\n    .replace(/(?:https?|ftp):\\/\\/[\\n\\S]+/gi, \" \")\n    .replace(/[\\u{1F600}-\\u{1F6FF}]/gu, \" \")\n    .trim()\n    .substring(0, 1000);\n};\n\nconst isSpamJobs = (content, subject) => {\n  const contentPatternsSpam = [\n    // github\n       /You can view, comment on/i,\n    \n    // Patrones numéricos de ofertas\n    /\\d+\\s*(nuevas?|oportunidades?|ofertas?|vacantes?|puestos?)\\s*(laborales?|de empleo|disponibles?)/i,\n    /\\d+\\s*new jobs?\\s*(in|matches|for|available)/i,\n\n    // Frases comunes en alertas\n    /Exciting news! We have new jobs that are available based on your requested job alerts/i,\n    /Buenos días Bursatilense/i,\n    /tenemos una nueva vacante que encaja con tu perfil/i,\n    /Improve your skills with this challenge/i,\n    /job alert/i,\n    /alerta de empleo/i,\n    /alertas? (laboral|de trabajo)/i,\n    /¡La revisión de tu currículum te espera!/i,\n    /(seleccionamos|encontramos|encontr[oó])\\s*para\\s*ti/i,\n    /matches your (profile|preferences)/i,\n    /(reactivate|activate|mejora)\\s*(tu|your)?\\s*(alerta|premium)/i,\n    /your job alert for/i,\n    /empresas que están buscando nuevos talentos/i,\n    /si (las vacantes|este puesto) encaja(n)? contigo/i,\n    /aplica (hoy mismo|ahora)/i,\n    /(mejora|actualiza) tu (alerta|búsqueda)/i,\n    /(eliminar|cancelar|dejar de recibir)\\s*(esta|las)?\\s*alertas?/i,\n    /(ver|revisa|consulta) (este|los) (trabajo|empleo|puesto)s?/i,\n    /(últimos|nuevos) (proyectos|concursos) que coinciden/i,\n\n    // Plataformas específicas\n    /(computrabajo|jooble|glassdoor|indeed|bebee|freelancer)/i,\n\n    // Ofertas genéricas\n    /(ofertas? de empleo|trabajos? disponibles)/i,\n    /puestos? disponibles de/i,\n    /(coinciden|match) con tu (perfil|alert)/i,\n    /estos (anuncios|puestos) (coinciden|son para)/i,\n\n    // Invitaciones a acción\n    /postúlate (rápidamente|ahora)/i,\n    /ver (todos|ofertas)/i,\n    /(click|ver|visita) (aquí|para más)/i,\n\n    // Footer típico\n    /pol[ií]tica de privacidad/i,\n    /términos y condiciones/i,\n    /cancelar suscripción/i,\n  ];\n\n  const subjectPatterns = [\n    /(alertas?|ofertas?) (de empleo|laborales)/i,\n    /job alert/i,\n    /nuev(a|o)s? (oportunidades|puestos)/i,\n    /trabajos para ti/i,\n    /(coincidencias|matches) para tu perfil/i,\n  ];\n\n  // Verificar patrones en el contenido\n  const contentCheck = contentPatternsSpam.some((pattern) =>\n    pattern.test(content)\n  );\n\n  // Verificar patrones en el asunto\n  const subjectCheck = subjectPatterns.some((pattern) => pattern.test(subject));\n\n  // Detectar muchos números (ofertas masivas)\n  const manyOpportunities = content.match(\n    /(\\d+)\\s*(nuevas?|oportunidades?|ofertas?|jobs?|puestos?)/gi\n  );\n  const highVolumeCheck =\n    manyOpportunities &&\n    manyOpportunities.some((match) => parseInt(match.replace(/\\D/g, \"\")) >= 3);\n\n  // Detectar listados de trabajos\n  const jobListingsCheck =\n    content.match(/(puesto|trabajo|empleo):?.+\\n.+\\n.+\\$/gi)?.length >= 2;\n\n  // Detectar footers típicos de plataformas\n  const platformFooterCheck = [\n    /indeed\\.com/i,\n    /glassdoor\\.com/i,\n    /computrabajo\\.com/i,\n    /jooble\\.org/i,\n    /freelancer\\.com/i,\n    /bebee\\.com/i,\n  ].some((pattern) => pattern.test(content));\n\n  return (\n    contentCheck ||\n    subjectCheck ||\n    highVolumeCheck ||\n    jobListingsCheck ||\n    platformFooterCheck\n  );\n};\n\nconst iterador = (item) => {\n  const metadata = {\n    from: item.json?.from?.value?.[0]?.name || \"Desconocido\",\n    fromEmail: item.json?.from?.value?.[0]?.address || \"\",\n    to: item.json?.to?.value?.[0]?.address || \"\",\n    subject: item.json?.subject || \"\",\n    date: item.json?.date\n      ? new Date(item.json.date).toLocaleDateString(\"es-CL\", {\n          day: \"numeric\",\n          month: \"numeric\",\n          year: \"numeric\",\n          hour: \"2-digit\",\n          minute: \"2-digit\",\n        })\n      : \"Fecha no disponible\",\n    messageId: item.json?.messageId || \"\",\n  };\n\n  const bodyContent = {\n    html: item.json?.html || \"\",\n    text: item.json?.text || \"\",\n    cleanText: cleanContent(item.json?.text || item.json?.html || \"\"),\n  };\n  const isSpam = isSpamJobs(bodyContent.cleanText, metadata.subject);\n\n  const keyElements = {\n    oportunidades:\n      (bodyContent.cleanText.match(\n        /(\\d+)\\s*(nuevas?|oportunidades?|ofertas?)/i\n      ) || [])[1] || \"No especificado\",\n    puesto:\n      (bodyContent.cleanText.match(\n        /(puesto|rol|posición)(?: de |:\\s*)([\\w\\sáéíóúñ]+)/i\n      ) || [])[2] || \"No especificado\",\n    ubicacion:\n      (bodyContent.cleanText.match(/(en |ubicación:?)\\s*([\\w\\sáéíóúñ.,-]+)/i) ||\n        [])[2] || \"No especificada\",\n    empresas:\n      (bodyContent.cleanText.match(\n        /(?:empresas?|companías?):?\\s*([^.:!?]+)/i\n      ) || [])[1] || \"No especificadas\",\n    urls: [\n      ...new Set([\n        ...(bodyContent.html.match(/https?:\\/\\/[^\\s\"'<>]+/g) || []),\n        ...(bodyContent.text.match(/https?:\\/\\/[^\\s]+/g) || []),\n      ]),\n    ].filter(\n      (url) =>\n        !url.match(/\\.(png|jpg|jpeg|gif|webp|css|js)\\b/i) &&\n        !url.includes(\"unsubscribe\")\n    ),\n  };\n\n  const emailType = isSpam\n    ? \"Alerta de Spam\"\n    : bodyContent.cleanText.includes(\"oportunidad\")\n    ? \"Oportunidad Laboral\"\n    : bodyContent.cleanText.includes(\"notificación\")\n    ? \"Notificación\"\n    : bodyContent.cleanText.includes(\"confirmación\")\n    ? \"Confirmación\"\n    : \"General\";\n\n  const sections = [\n    `📨 Tipo: ${emailType}`,\n    `📅 Fecha: ${metadata.date}`,\n    `👤 Remitente: ${metadata.from} <${metadata.fromEmail}>`,\n    metadata.subject && `📌 Asunto: ${metadata.subject}`,\n    keyElements.oportunidades !== \"No especificado\" &&\n      `🔢 Oportunidades: ${keyElements.oportunidades}`,\n    keyElements.puesto !== \"No especificado\" &&\n      `💼 Puesto: ${keyElements.puesto}`,\n    keyElements.ubicacion !== \"No especificada\" &&\n      `📍 Ubicación: ${keyElements.ubicacion}`,\n    keyElements.empresas !== \"No especificadas\" &&\n      `🏢 Empresas: ${keyElements.empresas}`,\n    keyElements.urls.length > 0 &&\n      `🔗 Enlaces relevantes:\\n${keyElements.urls.slice(0, 3).join(\"\\n\")}`,\n    `📝 Contenido resumido:\\n${bodyContent.cleanText.substring(0, 300)}...`,\n  ]\n    .filter(Boolean)\n    .join(\"\\n\\n\");\n\n  const res = {\n    metadata,\n    contentSummary: {\n      characters: bodyContent.cleanText.length,\n      words: bodyContent.cleanText.split(/\\s+/).length,\n      detectedElements: Object.keys(keyElements).filter(\n        (k) => keyElements[k] !== \"No especificado\"\n      ),\n    },\n    extractedData: keyElements,\n    fullSummary: sections,\n  };\n  return res;\n};\nconst extractEmailData = (item) => iterador(item);\nconst plainText = items.map(extractEmailData);\nreturn plainText;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [752, 1808],
+      "id": "81323f54-baa3-4349-883c-f563df264bd8",
+      "name": "SimplifyJson"
+    },
+    {
+      "parameters": {
+        "phoneNumberId": "590246180842883",
+        "recipientPhoneNumber": "+56 9 7464 6583",
+        "template": "entrevista_o_prueba_laboral|es_CL",
+        "components": {
+          "component": [
+            {
+              "bodyParameters": {
+                "parameter": [
+                  {
+                    "text": "={{ $json.components[0].parameters[0].text }}"
+                  },
+                  {
+                    "text": "={{ $json.components[0].parameters[1].text }}"
+                  },
+                  {
+                    "text": "={{ $json.components[0].parameters[2].text }}"
+                  },
+                  {
+                    "text": "={{ $json.components[0].parameters[3].text }}"
+                  },
+                  {
+                    "text": "={{ $json.components[0].parameters[4].text }}"
+                  },
+                  {
+                    "text": "={{ $json.components[0].parameters[5].text }}"
+                  },
+                  {
+                    "text": "={{ $json.components[0].parameters[6].text }}"
+                  },
+                  {
+                    "text": "={{ $json.components[0].parameters[7].text }}"
+                  },
+                  {
+                    "text": "={{ $json.components[0].parameters[8].text }}"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [2304, 1904],
+      "id": "cd2b87bd-a481-4829-b113-7aa4a0a3f06b",
+      "name": "WhatsApp Business Cloud5",
+      "webhookId": "55342ac2-6b6e-425b-8663-b32661489e58",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "LBCxcqNpB86yNbGk",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json.output }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "."
+            },
+            {
+              "category": "Pruebas",
+              "description": "SOLO evaluaciones técnicas formales como parte de procesos de selección laboral. DEBE contener: instrucciones para resolver problemas técnicos específicos, mención explícita de evaluación para un puesto, contexto claro de proceso de selección, plazo de entrega definido. Keywords específicos al contexto laboral: 'prueba técnica para el puesto', 'evaluación para la posición', 'ejercicio de selección', 'código solicitado para la vacante', 'challenge como parte del proceso', 'resolución del problema adjunto', 'tiempo establecido para la prueba', 'etapa técnica del proceso', 'enviar solución antes del', 'evaluación de habilidades técnicas'"
+            },
+            {
+              "category": "Entrevistas",
+              "description": "SOLO comunicaciones relacionadas con entrevistas de trabajo. DEBE mencionar explícitamente: Postulación, coordinación de entrevista laboral,postulación, fecha y hora específicas para un encuentro con reclutadores/empleadores, plataforma para realizar la entrevista. Keywords específicos a entrevistas laborales: 'entrevista para el puesto', 'entrevista técnica', 'coordinar reunión para el proceso', 'link para la entrevista', 'confirmación de entrevista', 'agenda para entrevista', 'proceso de selección', 'reclutador te invita', 'siguiente fase de entrevistas', 'conversación con el equipo de', 'invitación formal para entrevista'"
+            },
+            {
+              "category": "n8n things",
+              "description": "correos sobre n8n. Keywords: automatización, workflow, integración, n8n, flujo de trabajo, nodo, trigger, acción, API, conexión, configuración"
+            },
+            {
+              "category": "Aprendizaje",
+              "description": "Cursos, certificaciones y contenido educativo. EXCLUIR si menciona pruebas en contexto laboral. Keywords: curso, certificación, tutorial, aprendizaje, capacitación, bootcamp, taller online, masterclass, webinar educativo, especialización"
+            },
+            {
+              "category": "Eventos Tech",
+              "description": "Eventos locales en Arica/Santiago/Chile/Remotos. Palabras clave: meetup, charla, workshop, networking. Keyword: meetup, charla, workshop, networking, conferencia, evento tech, hackathon, demo day, pitch, presentación, summit, congreso tecnológico"
+            },
+            {
+              "category": "Voluntariado",
+              "description": "Oportunidades de colaboración social con tecnología. Keywords: voluntario, social, comunidad, impacto, ayuda, proyecto social, sin fines de lucro, ONG, colaboración, participación, tech for good, transformación social"
+            },
+            {
+              "category": "Productos y Servicios",
+              "description": "Anuncios, actualizaciones o pruebas de productos y servicios. NO confundir con pruebas laborales. Keywords: nueva función, actualización, versión beta, probar características, testing, feedback, experimentar, lanzamiento, feature, producto, servicio, plataforma, suscripción, mejoras, usuarios, prueba de producto"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "66285b5d-945c-4f0c-98bb-c8e528458aad",
+      "name": "ClassifyResume",
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1,
+      "position": [1264, 1808]
+    },
+    {
+      "parameters": {
+        "jsCode": "const cleanText = (text) => {\n  if (!text || typeof text !== 'string') return 'No especificado';\n  return text.replace(/\\*\\*/g, '').replace(/^[📨🔧⏰📍🏢📋⚠️]\\s*/, '').trim();\n};\n\nconst raw = $('ResumeGenerator').first().json.output || '';\nconst lines = raw.split('\\n').filter(line => line.trim());\n\n// Valores por defecto\nlet tipoProcesoCompleto = 'Proceso laboral';\nlet descripcionProceso = 'Información sobre el proceso';\nlet fechaHora = 'Fecha por confirmar';\nlet modalidad = 'Modalidad por definir';\nlet empresa = 'Empresa no especificada';\nlet detalles = 'Detalles adicionales';\nlet accionRequerida = 'Confirmar participación';\n\n// Extraer información línea por línea\nlines.forEach(line => {\n  const cleanLine = line.trim();\n  \n  if (cleanLine.includes('📨')) {\n    tipoProcesoCompleto = cleanText(cleanLine.replace('📨', ''));\n  }\n  else if (cleanLine.includes('🔧')) {\n    descripcionProceso = cleanText(cleanLine.replace('🔧', ''));\n  }\n  else if (cleanLine.includes('⏰')) {\n    // Extraer la parte después de los dos puntos\n    const match = cleanLine.match(/⏰[^:]*:\\s*(.+)/);\n    fechaHora = match ? match[1].trim() : cleanText(cleanLine.replace('⏰', ''));\n  }\n  else if (cleanLine.includes('📍')) {\n    // Extraer la parte después de los dos puntos\n    const match = cleanLine.match(/📍[^:]*:\\s*(.+)/);\n    modalidad = match ? match[1].trim() : cleanText(cleanLine.replace('📍', ''));\n  }\n  else if (cleanLine.includes('🏢')) {\n    // Extraer la parte después de los dos puntos\n    const match = cleanLine.match(/🏢[^:]*:\\s*(.+)/);\n    empresa = match ? match[1].trim() : cleanText(cleanLine.replace('🏢', ''));\n  }\n  else if (cleanLine.includes('📋')) {\n    // Extraer la parte después de los dos puntos\n    const match = cleanLine.match(/📋[^:]*:\\s*(.+)/);\n    detalles = match ? match[1].trim() : cleanText(cleanLine.replace('📋', ''));\n  }\n  else if (cleanLine.includes('⚠️')) {\n    // Extraer la parte después de los dos puntos\n    const match = cleanLine.match(/⚠️[^:]*:\\s*(.+)/);\n    accionRequerida = match ? match[1].trim() : cleanText(cleanLine.replace('⚠️', ''));\n  }\n});\n\n// Crear array de parámetros para WhatsApp\nconst parameters = [\n  { type: 'text', text: tipoProcesoCompleto },      // {{1}}\n  { type: 'text', text: descripcionProceso },       // {{2}}\n  { type: 'text', text: empresa },                  // {{3}}\n  { type: 'text', text: fechaHora },                // {{4}}\n  { type: 'text', text: modalidad },                // {{5}}\n  { type: 'text', text: detalles },                 // {{6}}\n  { type: 'text', text: accionRequerida },          // {{7}}\n  { type: 'text', text: '45 minutos' },             // {{8}} - duración estimada\n  { type: 'text', text: 'Confirmar antes del plazo establecido' } // {{9}} - instrucción adicional\n];\n\nreturn [{\n  json: {\n    components: [{\n      type: 'body',\n      parameters\n    }]\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2080, 1904],
+      "id": "cd535bce-5eb3-412a-af8e-f3c9bb43b496",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "chatgpt-4o-latest",
+          "mode": "list",
+          "cachedResultName": "chatgpt-4o-latest"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [944, 2000],
+      "id": "8deb15d8-f85e-45d4-84e8-df48d6bb687b",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "h09QStqWGPgrk2iu",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "chatgpt-4o-latest",
+          "mode": "list",
+          "cachedResultName": "chatgpt-4o-latest"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [768, 2048],
+      "id": "04d8bd41-a446-465d-8b45-a1be1c5bf63b",
+      "name": "OpenAI Chat Model3",
+      "credentials": {
+        "openAiApi": {
+          "id": "h09QStqWGPgrk2iu",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Code Prueba Tecnica": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Prueba Tecnica",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GmailTrigger": {
+      "main": [
+        [
+          {
+            "node": "Get Mail5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "ClassifyResume",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Mail5": {
+      "main": [
+        [
+          {
+            "node": "await 1 sec",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prueba tecnica": {
+      "main": [
+        [
+          {
+            "node": "Code Prueba Tecnica",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Entrevista": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ResumeGenerator": {
+      "main": [
+        [
+          {
+            "node": "ClassifyResume",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "await 1 sec": {
+      "main": [
+        [
+          {
+            "node": "SimplifyJson",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SimplifyJson": {
+      "main": [
+        [
+          {
+            "node": "ResumeGenerator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ClassifyResume": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Prueba tecnica",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Entrevista",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "n8n",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "cursos",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "eventos tech",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Voluntariado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Business Cloud5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "ResumeGenerator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3f55899d61e9f0757f5fd34228c134c51356103eb4b39eee4e2a1670e5072098"
+  }
+}

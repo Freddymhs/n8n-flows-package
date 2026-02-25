@@ -1,0 +1,175 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 7,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, -100],
+      "id": "a1b2c3d4-0001-0001-0001-000000000001",
+      "name": "daily-07:30"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 20,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 100],
+      "id": "a1b2c3d4-0001-0001-0001-000000000006",
+      "name": "daily-20:30"
+    },
+    {
+      "parameters": {
+        "operation": "formatDate",
+        "date": "={{ $json.timestamp }}",
+        "format": "yyyy/MM/dd",
+        "outputFieldName": "readbleTimeFound",
+        "options": {
+          "timezone": true
+        }
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [192, 0],
+      "id": "a1b2c3d4-0001-0001-0001-000000000002",
+      "name": "Date & Time"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Base de datos de pagos mensuales recurrentes\nconst pagos = [\n  {\n    nombre: \"Movistar Teléfono Móvil\",\n    monto: 5500,\n    dia: 16\n  },\n  {\n    nombre: \"VTR Hogar\",\n    monto: 9990,\n    dia: 8\n  }\n];\n\n// Obtener el día actual del mes\nconst fechaInput = $input.first().json.readbleTimeFound.replace(/\\//g, \"-\");\nconst hoy = new Date(fechaInput);\nconst diaHoy = hoy.getDate();\n\n// Filtrar pagos que vencen hoy\nconst pagosHoy = pagos.filter(p => p.dia === diaHoy);\n\nif (pagosHoy.length === 0) {\n  return [{ json: { skip: true, output: null } }];\n}\n\n// Formatear monto en pesos chilenos\nconst formatMonto = (monto) =>\n  monto.toLocaleString(\"es-CL\", { style: \"currency\", currency: \"CLP\" });\n\nlet mensaje = `💸 *Recordatorio de Pagos — Hoy día ${diaHoy}*\\n\\n`;\n\npagosHoy.forEach(pago => {\n  mensaje += `▸ 📱 *${pago.nombre}*\\n`;\n  mensaje += `   💰 ${formatMonto(pago.monto)}\\n\\n`;\n});\n\nmensaje += `────────────────\\n⚠️ Recuerda realizar el pago hoy.`;\n\nreturn [{ json: { skip: false, output: mensaje } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [384, 0],
+      "id": "a1b2c3d4-0001-0001-0001-000000000003",
+      "name": "Pagos Mensuales"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-skip",
+              "leftValue": "={{ $json.skip }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [576, 0],
+      "id": "a1b2c3d4-0001-0001-0001-000000000004",
+      "name": "Hay pagos hoy?"
+    },
+    {
+      "parameters": {
+        "chatId": "-1002571880704",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [768, -80],
+      "id": "a1b2c3d4-0001-0001-0001-000000000005",
+      "name": "Telegram",
+      "credentials": {
+        "telegramApi": {
+          "id": "CBOywzpBdmg2u1Nn",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "daily-07:30": {
+      "main": [
+        [
+          {
+            "node": "Date & Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "daily-20:30": {
+      "main": [
+        [
+          {
+            "node": "Date & Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time": {
+      "main": [
+        [
+          {
+            "node": "Pagos Mensuales",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pagos Mensuales": {
+      "main": [
+        [
+          {
+            "node": "Hay pagos hoy?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hay pagos hoy?": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "instanceId": "3f55899d61e9f0757f5fd34228c134c51356103eb4b39eee4e2a1670e5072098"
+  }
+}
