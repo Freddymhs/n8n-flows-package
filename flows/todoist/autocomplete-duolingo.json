@@ -1,0 +1,164 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 23,
+              "triggerAtMinute": 59
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [-816, -160],
+      "id": "56f82c68-c71f-461d-9c31-02ddc35de356",
+      "name": "daily-23:59"
+    },
+    {
+      "parameters": {
+        "jsCode": "const tasks = $input.all();\n\nconst duolingoTasks = tasks.filter(item => {\nconst content = (item.json.content || '').toLowerCase();\nreturn content.includes('🔔 recordatorio inglés (duolingo 5 min)');\n});\n\nif (duolingoTasks.length === 0) {\nreturn [{ json: { found: false } }];\n}\n\nreturn duolingoTasks.map(t => ({\njson: { found: true, taskId: t.json.id, content: t.json.content }\n}));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-384, -160],
+      "id": "33867163-c972-4165-803a-4c9db5411139",
+      "name": "Filter Duolingo Tasks"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "cond-found",
+              "leftValue": "={{ $json.found }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [-160, -160],
+      "id": "41e2d79b-ce46-417f-bec2-839127a8eee7",
+      "name": "Has Duolingo Tasks?"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [64, -64],
+      "id": "6364a74f-4bdf-4bd6-af0f-70d079253b5c",
+      "name": "No Tasks Found"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "getAll",
+        "returnAll": true,
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.todoist",
+      "typeVersion": 2.2,
+      "position": [-576, -160],
+      "id": "584ee390-409c-45ef-8da5-a0cb8d30545c",
+      "name": "Get many tasks1",
+      "credentials": {
+        "todoistOAuth2Api": {
+          "id": "ImrU3Ymm3Se7NoJp",
+          "name": "Todoist account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "close",
+        "taskId": "={{ $json.taskId }}"
+      },
+      "type": "n8n-nodes-base.todoist",
+      "typeVersion": 2.2,
+      "position": [48, -256],
+      "id": "0484349a-1832-4858-a10b-e894642b753f",
+      "name": "Close a task",
+      "credentials": {
+        "todoistOAuth2Api": {
+          "id": "ImrU3Ymm3Se7NoJp",
+          "name": "Todoist account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "daily-23:59": {
+      "main": [
+        [
+          {
+            "node": "Get many tasks1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Duolingo Tasks": {
+      "main": [
+        [
+          {
+            "node": "Has Duolingo Tasks?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Duolingo Tasks?": {
+      "main": [
+        [
+          {
+            "node": "Close a task",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Tasks Found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many tasks1": {
+      "main": [
+        [
+          {
+            "node": "Filter Duolingo Tasks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3f55899d61e9f0757f5fd34228c134c51356103eb4b39eee4e2a1670e5072098"
+  }
+}

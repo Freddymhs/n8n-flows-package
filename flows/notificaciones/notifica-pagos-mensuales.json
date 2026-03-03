@@ -13,8 +13,11 @@
       },
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
-      "position": [0, -100],
-      "id": "a1b2c3d4-0001-0001-0001-000000000001",
+      "position": [
+        -368,
+        -256
+      ],
+      "id": "97fd1ffd-4c09-430c-a694-2a8b1390e58e",
       "name": "daily-07:30"
     },
     {
@@ -30,8 +33,11 @@
       },
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
-      "position": [0, 100],
-      "id": "a1b2c3d4-0001-0001-0001-000000000006",
+      "position": [
+        -368,
+        -64
+      ],
+      "id": "258a08b8-a5e3-42b9-b97e-43103835f701",
       "name": "daily-20:30"
     },
     {
@@ -46,18 +52,24 @@
       },
       "type": "n8n-nodes-base.dateTime",
       "typeVersion": 2,
-      "position": [192, 0],
-      "id": "a1b2c3d4-0001-0001-0001-000000000002",
+      "position": [
+        -176,
+        -160
+      ],
+      "id": "51955bcb-04b7-40a8-add3-b63205f51042",
       "name": "Date & Time"
     },
     {
       "parameters": {
-        "jsCode": "// Base de datos de pagos mensuales recurrentes\nconst pagos = [\n  {\n    nombre: \"Movistar Teléfono Móvil\",\n    monto: 5500,\n    dia: 16\n  },\n  {\n    nombre: \"VTR Hogar\",\n    monto: 9990,\n    dia: 8\n  }\n];\n\n// Obtener el día actual del mes\nconst fechaInput = $input.first().json.readbleTimeFound.replace(/\\//g, \"-\");\nconst hoy = new Date(fechaInput);\nconst diaHoy = hoy.getDate();\n\n// Filtrar pagos que vencen hoy\nconst pagosHoy = pagos.filter(p => p.dia === diaHoy);\n\nif (pagosHoy.length === 0) {\n  return [{ json: { skip: true, output: null } }];\n}\n\n// Formatear monto en pesos chilenos\nconst formatMonto = (monto) =>\n  monto.toLocaleString(\"es-CL\", { style: \"currency\", currency: \"CLP\" });\n\nlet mensaje = `💸 *Recordatorio de Pagos — Hoy día ${diaHoy}*\\n\\n`;\n\npagosHoy.forEach(pago => {\n  mensaje += `▸ 📱 *${pago.nombre}*\\n`;\n  mensaje += `   💰 ${formatMonto(pago.monto)}\\n\\n`;\n});\n\nmensaje += `────────────────\\n⚠️ Recuerda realizar el pago hoy.`;\n\nreturn [{ json: { skip: false, output: mensaje } }];"
+        "jsCode": "// Base de datos de pagos mensuales recurrentes\nconst pagos = [\n  {\n    nombre: \"Movistar Teléfono Móvil\",\n    monto: 5500,\n    dia: 15\n  },\n  {\n    nombre: \"VTR Hogar\",\n    monto: 9990,\n    dia: 4\n  }\n];\n\n// Obtener el día actual del mes\nconst fechaInput = $input.first().json.readbleTimeFound.replace(/\\//g, \"-\");\nconst hoy = new Date(fechaInput);\nconst diaHoy = hoy.getDate();\n\n// Filtrar pagos que vencen hoy\nconst pagosHoy = pagos.filter(p => p.dia === diaHoy);\n\nif (pagosHoy.length === 0) {\n  return [{ json: { skip: true, output: null } }];\n}\n\n// Formatear monto en pesos chilenos\nconst formatMonto = (monto) =>\n  monto.toLocaleString(\"es-CL\", { style: \"currency\", currency: \"CLP\" });\n\nlet mensaje = `💸 *Recordatorio de Pagos — Hoy día ${diaHoy}*\\n\\n`;\n\npagosHoy.forEach(pago => {\n  mensaje += `▸ 📱 *${pago.nombre}*\\n`;\n  mensaje += `   💰 ${formatMonto(pago.monto)}\\n\\n`;\n});\n\nmensaje += `────────────────\\n⚠️ Recuerda realizar el pago hoy.`;\n\nreturn [{ json: { skip: false, output: mensaje } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [384, 0],
-      "id": "a1b2c3d4-0001-0001-0001-000000000003",
+      "position": [
+        16,
+        -160
+      ],
+      "id": "d0efdedd-f656-4dd8-860b-180956aae434",
       "name": "Pagos Mensuales"
     },
     {
@@ -66,7 +78,8 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "strict"
+            "typeValidation": "strict",
+            "version": 1
           },
           "conditions": [
             {
@@ -85,8 +98,11 @@
       },
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [576, 0],
-      "id": "a1b2c3d4-0001-0001-0001-000000000004",
+      "position": [
+        208,
+        -160
+      ],
+      "id": "1540ef9d-e6cd-4392-85ef-4ff22e1796d6",
       "name": "Hay pagos hoy?"
     },
     {
@@ -99,9 +115,13 @@
       },
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [768, -80],
-      "id": "a1b2c3d4-0001-0001-0001-000000000005",
+      "position": [
+        400,
+        -240
+      ],
+      "id": "6e7d771a-27f1-44c0-9d20-e65d4975eda3",
       "name": "Telegram",
+      "webhookId": "cc6825b2-1a5c-4c7f-8c9c-4237e518b1b7",
       "credentials": {
         "telegramApi": {
           "id": "CBOywzpBdmg2u1Nn",
@@ -163,8 +183,7 @@
             "type": "main",
             "index": 0
           }
-        ],
-        []
+        ]
       ]
     }
   },
