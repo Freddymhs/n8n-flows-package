@@ -13,7 +13,11 @@
     "./flows/*": "./flows/*.json"
   },
   "license": "MIT",
-  "dependencies": {
+  "scripts": {
+    "pull": "node scripts/pull-from-n8n.js",
+    "import": "node scripts/import-to-n8n.js"
+  },
+  "devDependencies": {
     "dotenv": "^17.2.3"
   }
 }

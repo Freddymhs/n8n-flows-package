@@ -5,6 +5,19 @@ const path = require("path");
 const N8N_URL = process.env.N8N_URL || "http://localhost:5678";
 const API_KEY = process.env.N8N_API_KEY || "";
 
+function collectJsonFiles(dir) {
+  const results = [];
+  fs.readdirSync(dir).forEach((entry) => {
+    const fullPath = path.join(dir, entry);
+    if (fs.statSync(fullPath).isDirectory()) {
+      results.push(...collectJsonFiles(fullPath));
+    } else if (entry.endsWith(".json")) {
+      results.push(fullPath);
+    }
+  });
+  return results;
+}
+
 const FLOWS_DIR = path.join(__dirname, "../flows");
 
 async function importFlow(flowPath) {
@@ -58,10 +71,7 @@ async function main() {
 
   let files;
   try {
-    files = fs
-      .readdirSync(FLOWS_DIR)
-      .filter((f) => f.endsWith(".json"))
-      .map((f) => path.join(FLOWS_DIR, f));
+    files = collectJsonFiles(FLOWS_DIR);
   } catch (error) {
     const { message } = error;
     console.error(`❌ Error leyendo directorio ${FLOWS_DIR}:`, message);

@@ -4,11 +4,18 @@ const path = require("path");
 const flowsDir = path.join(__dirname, "flows");
 const flows = {};
 
-fs.readdirSync(flowsDir)
-  .filter((file) => file.endsWith(".json"))
-  .forEach((file) => {
-    const flowName = file.replace(".json", "");
-    flows[flowName] = require(path.join(flowsDir, file));
+function loadFlows(dir) {
+  fs.readdirSync(dir).forEach((entry) => {
+    const fullPath = path.join(dir, entry);
+    if (fs.statSync(fullPath).isDirectory()) {
+      loadFlows(fullPath);
+    } else if (entry.endsWith(".json")) {
+      const flowName = entry.replace(".json", "");
+      flows[flowName] = require(fullPath);
+    }
   });
+}
+
+loadFlows(flowsDir);
 
 module.exports = flows;
