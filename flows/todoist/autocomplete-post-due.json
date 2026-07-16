@@ -1,0 +1,142 @@
+{
+  "createdAt": "2026-07-16T10:37:33.310Z",
+  "updatedAt": "2026-07-16T12:06:13.748Z",
+  "id": "EOb6LQdOANxk9cvR",
+  "name": "autocomplete post due",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://api.todoist.com/api/v1/tasks",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 2221fb2205752157ae217b2ea8d9e56f6f974680"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -580,
+        -60
+      ],
+      "id": "37baf9cb-c91c-4c32-bab7-c76c0955fb2e",
+      "name": "GET TASKS"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 2
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -800,
+        -20
+      ],
+      "id": "c4ee8678-d472-48f1-b5da-abc6118fd85a",
+      "name": "daily-23:59"
+    },
+    {
+      "parameters": {
+        "jsCode": "const PERSONAL_HABITS_PROJECT_ID = '6W4Vj63fmjqJqRgX';\n\nconst now = new Date();\nconst tasks = $input.first().json.results || [];\n\nconst overdueTasks = tasks.filter(item => {\n  const { project_id, due } = item;\n  \n  const isPersonalHabit = project_id === PERSONAL_HABITS_PROJECT_ID;\n  const hasDueDate = due && due['date'];\n\n  if (!isPersonalHabit || !hasDueDate) return false;\n  \n  const dueDate = new Date(String(due['date']));\n  const isOverdue = dueDate < now;\n  \n  return isOverdue;\n});\n\nreturn overdueTasks.map(task => ({ json: task }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        -60
+      ],
+      "id": "7d2ce894-cf56-4aaa-8b3d-6b3d180bdf1d",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.todoist.com/rest/v2/tasks/{{ $json.id }}/close",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 2221fb2205752157ae217b2ea8d9e56f6f974680"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -220,
+        -60
+      ],
+      "id": "e27ecaef-11dc-4241-b45e-3abffab51986",
+      "name": "DELETE"
+    }
+  ],
+  "connections": {
+    "daily-23:59": {
+      "main": [
+        [
+          {
+            "node": "GET TASKS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET TASKS": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "DELETE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "76443052-b044-4210-8a5d-5dfc3e503648",
+  "triggerCount": 0,
+  "tags": [
+    {
+      "createdAt": "2026-07-16T12:05:55.942Z",
+      "updatedAt": "2026-07-16T12:05:55.942Z",
+      "id": "1TKyATcEyfRGFpIL",
+      "name": "todoist"
+    }
+  ]
+}
