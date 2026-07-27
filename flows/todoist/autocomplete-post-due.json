@@ -1,13 +1,46 @@
 {
   "createdAt": "2026-07-16T10:37:33.310Z",
-  "updatedAt": "2026-07-16T12:06:13.748Z",
+  "updatedAt": "2026-07-27T15:23:06.770Z",
   "id": "EOb6LQdOANxk9cvR",
-  "name": "autocomplete post due",
-  "active": false,
+  "name": "autocomplete-post-due",
+  "active": true,
   "nodes": [
     {
       "parameters": {
-        "url": "https://api.todoist.com/api/v1/tasks",
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 11,15,18,21 * * *"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -800,
+        -280
+      ],
+      "id": "86d0aa96-9117-467f-9090-55b9fc6d5225",
+      "name": "daily-23:"
+    },
+    {
+      "parameters": {
+        "jsCode": "const PERSONAL_HABITS_PROJECT_ID = '6W4Vj63fmjqJqRgX';\n\nconst now = new Date();\nconst tasks = $input.first().json.results || [];\n\nconst overdueTasks = tasks.filter(item => {\n  const { project_id, due } = item;\n  \n  const isPersonalHabit = project_id === PERSONAL_HABITS_PROJECT_ID;\n  const hasDueDate = due && due['date'];\n\n  if (!isPersonalHabit || !hasDueDate) return false;\n  \n  const dueDate = new Date(String(due['date']));\n  const isOverdue = dueDate < now;\n  \n  return isOverdue;\n});\n\nreturn overdueTasks.map(task => ({ json: task }));\n// return overdueTasks.map(task => ({ json: task }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        -280
+      ],
+      "id": "77747991-590c-46a2-b64c-fc5e05038f24",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "url": "https://api.todoist.com/api/v1/tasks?project_id=6W4Vj63fmjqJqRgX",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -23,48 +56,15 @@
       "typeVersion": 4.2,
       "position": [
         -580,
-        -60
+        -280
       ],
-      "id": "37baf9cb-c91c-4c32-bab7-c76c0955fb2e",
-      "name": "GET TASKS"
-    },
-    {
-      "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "field": "hours",
-              "hoursInterval": 2
-            }
-          ]
-        }
-      },
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.2,
-      "position": [
-        -800,
-        -20
-      ],
-      "id": "c4ee8678-d472-48f1-b5da-abc6118fd85a",
-      "name": "daily-23:59"
-    },
-    {
-      "parameters": {
-        "jsCode": "const PERSONAL_HABITS_PROJECT_ID = '6W4Vj63fmjqJqRgX';\n\nconst now = new Date();\nconst tasks = $input.first().json.results || [];\n\nconst overdueTasks = tasks.filter(item => {\n  const { project_id, due } = item;\n  \n  const isPersonalHabit = project_id === PERSONAL_HABITS_PROJECT_ID;\n  const hasDueDate = due && due['date'];\n\n  if (!isPersonalHabit || !hasDueDate) return false;\n  \n  const dueDate = new Date(String(due['date']));\n  const isOverdue = dueDate < now;\n  \n  return isOverdue;\n});\n\nreturn overdueTasks.map(task => ({ json: task }));\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -400,
-        -60
-      ],
-      "id": "7d2ce894-cf56-4aaa-8b3d-6b3d180bdf1d",
-      "name": "Code"
+      "id": "cf766ba2-c69f-4791-b642-12cfcbf918f0",
+      "name": "GET TASKS PROYECT"
     },
     {
       "parameters": {
         "method": "POST",
-        "url": "=https://api.todoist.com/rest/v2/tasks/{{ $json.id }}/close",
+        "url": "=https://api.todoist.com/api/v1/tasks/{{ $json.id }}/close",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -79,41 +79,41 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -220,
-        -60
+        -200,
+        -280
       ],
-      "id": "e27ecaef-11dc-4241-b45e-3abffab51986",
-      "name": "DELETE"
+      "id": "07b39571-2b0f-461c-895c-92c828d593c6",
+      "name": "DELETE ALL"
     }
   ],
   "connections": {
-    "daily-23:59": {
+    "daily-23:": {
       "main": [
         [
           {
-            "node": "GET TASKS",
+            "node": "GET TASKS PROYECT",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "GET TASKS": {
+    "Code1": {
       "main": [
         [
           {
-            "node": "Code",
+            "node": "DELETE ALL",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Code": {
+    "GET TASKS PROYECT": {
       "main": [
         [
           {
-            "node": "DELETE",
+            "node": "Code1",
             "type": "main",
             "index": 0
           }
@@ -124,13 +124,20 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "staticData": null,
+  "staticData": {
+    "node:daily-23:59": {
+      "recurrenceRules": []
+    },
+    "node:daily-23:": {
+      "recurrenceRules": []
+    }
+  },
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "76443052-b044-4210-8a5d-5dfc3e503648",
-  "triggerCount": 0,
+  "versionId": "e57e3d74-be15-4101-9f6b-c4dfa7b591fb",
+  "triggerCount": 1,
   "tags": [
     {
       "createdAt": "2026-07-16T12:05:55.942Z",

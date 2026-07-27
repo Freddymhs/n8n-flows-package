@@ -1,4 +1,9 @@
 {
+  "createdAt": "2026-07-16T13:19:29.405Z",
+  "updatedAt": "2026-07-27T14:41:06.427Z",
+  "id": "BGLN9qAanfdzEaHG",
+  "name": "alimentacion-diaria",
+  "active": false,
   "nodes": [
     {
       "parameters": {
@@ -27,7 +32,10 @@
       },
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
-      "position": [-1744, 3888],
+      "position": [
+        -1744,
+        3888
+      ],
       "id": "749ae3c3-9cdb-483e-914a-b63c7ace83ca",
       "name": "If"
     },
@@ -37,7 +45,10 @@
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
       "typeVersion": 1,
-      "position": [-784, 4064],
+      "position": [
+        -784,
+        4064
+      ],
       "id": "f2553514-8ea1-48d5-922e-85c9447eea40",
       "name": "Groq Chat Model",
       "credentials": {
@@ -54,7 +65,10 @@
       "id": "ffb7b3d1-80e6-48cf-b98c-79eb3ffbb2a1",
       "name": "valida es consumo",
       "type": "n8n-nodes-base.code",
-      "position": [-1920, 3888],
+      "position": [
+        -1920,
+        3888
+      ],
       "typeVersion": 2
     },
     {
@@ -67,7 +81,10 @@
       },
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
-      "position": [-1120, 3888],
+      "position": [
+        -1120,
+        3888
+      ],
       "id": "26a7bf65-8ea6-45b1-8f8c-a7f2dac087fd",
       "name": "Google Drive1",
       "alwaysOutputData": true,
@@ -85,7 +102,10 @@
       },
       "type": "n8n-nodes-base.dateTime",
       "typeVersion": 2,
-      "position": [-1584, 3808],
+      "position": [
+        -1584,
+        3808
+      ],
       "id": "afa2f966-bc49-4e7e-9597-f34f8441d23f",
       "name": "Date & Time2"
     },
@@ -100,7 +120,10 @@
       },
       "type": "n8n-nodes-base.dateTime",
       "typeVersion": 2,
-      "position": [-1424, 3888],
+      "position": [
+        -1424,
+        3888
+      ],
       "id": "83cb8f43-8d6f-46d2-9561-5c2ba90133a3",
       "name": "Date & Time3"
     },
@@ -118,7 +141,10 @@
       },
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
-      "position": [-976, 3888],
+      "position": [
+        -976,
+        3888
+      ],
       "id": "7ac3ecb0-25f0-4d88-9f03-55562c0040fb",
       "name": "Google Drive2",
       "credentials": {
@@ -150,7 +176,10 @@
       },
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
-      "position": [-480, 3888],
+      "position": [
+        -480,
+        3888
+      ],
       "id": "dcb968e5-df06-473b-b316-f784a585e014",
       "name": "Google Drive5",
       "credentials": {
@@ -166,7 +195,10 @@
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [-1264, 3888],
+      "position": [
+        -1264,
+        3888
+      ],
       "id": "93959662-650c-4ac1-bd36-a7a51fb1efc9",
       "name": "formatted data"
     },
@@ -178,7 +210,10 @@
       },
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [-304, 3888],
+      "position": [
+        -304,
+        3888
+      ],
       "id": "41cb8666-cf53-4d88-8f50-c60d3e8575ef",
       "name": "Archivo Agregado",
       "webhookId": "c7a159c6-2782-4683-b170-9060815d6b01",
@@ -202,18 +237,26 @@
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.8,
-      "position": [-800, 3888],
+      "position": [
+        -800,
+        3888
+      ],
       "id": "48a2dd18-9d2a-400d-b30b-22ac8722af98",
       "name": "IA ALIMENTACION"
     },
     {
       "parameters": {
-        "updates": ["message"],
+        "updates": [
+          "message"
+        ],
         "additionalFields": {}
       },
       "type": "n8n-nodes-base.telegramTrigger",
       "typeVersion": 1.1,
-      "position": [-2096, 3888],
+      "position": [
+        -2096,
+        3888
+      ],
       "id": "89f365a1-37a4-4ba4-b27f-f6743d7f14cc",
       "name": "Agrega Consumo diario",
       "webhookId": "f588ff9d-fe1f-43d4-b2bc-335ca6ba07da",
@@ -348,9 +391,18 @@
       ]
     }
   },
-  "pinData": {},
-  "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "3f55899d61e9f0757f5fd34228c134c51356103eb4b39eee4e2a1670e5072098"
-  }
+  "settings": {},
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "119be0fa-c587-49fe-91ca-95c89f21eb7f",
+  "triggerCount": 0,
+  "tags": [
+    {
+      "createdAt": "2026-07-16T13:24:18.681Z",
+      "updatedAt": "2026-07-16T13:24:18.681Z",
+      "id": "4wvOMO8iuRBoxEHv",
+      "name": "salud"
+    }
+  ]
 }

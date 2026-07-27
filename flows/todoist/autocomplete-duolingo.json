@@ -1,4 +1,9 @@
 {
+  "createdAt": "2026-07-16T13:19:29.497Z",
+  "updatedAt": "2026-07-27T14:41:06.609Z",
+  "id": "U58zaugBvETL46rP",
+  "name": "autocomplete-duolingo",
+  "active": false,
   "nodes": [
     {
       "parameters": {
@@ -13,7 +18,10 @@
       },
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
-      "position": [-816, -160],
+      "position": [
+        -816,
+        -160
+      ],
       "id": "56f82c68-c71f-461d-9c31-02ddc35de356",
       "name": "daily-23:59"
     },
@@ -23,7 +31,10 @@
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [-384, -160],
+      "position": [
+        -384,
+        -160
+      ],
       "id": "33867163-c972-4165-803a-4c9db5411139",
       "name": "Filter Duolingo Tasks"
     },
@@ -53,7 +64,10 @@
       },
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [-160, -160],
+      "position": [
+        -160,
+        -160
+      ],
       "id": "41e2d79b-ce46-417f-bec2-839127a8eee7",
       "name": "Has Duolingo Tasks?"
     },
@@ -61,7 +75,10 @@
       "parameters": {},
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
-      "position": [64, -64],
+      "position": [
+        64,
+        -64
+      ],
       "id": "6364a74f-4bdf-4bd6-af0f-70d079253b5c",
       "name": "No Tasks Found"
     },
@@ -74,7 +91,10 @@
       },
       "type": "n8n-nodes-base.todoist",
       "typeVersion": 2.2,
-      "position": [-576, -160],
+      "position": [
+        -576,
+        -160
+      ],
       "id": "584ee390-409c-45ef-8da5-a0cb8d30545c",
       "name": "Get many tasks1",
       "credentials": {
@@ -92,7 +112,10 @@
       },
       "type": "n8n-nodes-base.todoist",
       "typeVersion": 2.2,
-      "position": [48, -256],
+      "position": [
+        48,
+        -256
+      ],
       "id": "0484349a-1832-4858-a10b-e894642b753f",
       "name": "Close a task",
       "credentials": {
@@ -156,9 +179,18 @@
       ]
     }
   },
-  "pinData": {},
-  "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "3f55899d61e9f0757f5fd34228c134c51356103eb4b39eee4e2a1670e5072098"
-  }
+  "settings": {},
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "25cbdb6e-494d-46c7-ab51-2111fca0890a",
+  "triggerCount": 0,
+  "tags": [
+    {
+      "createdAt": "2026-07-16T12:05:55.942Z",
+      "updatedAt": "2026-07-16T12:05:55.942Z",
+      "id": "1TKyATcEyfRGFpIL",
+      "name": "todoist"
+    }
+  ]
 }

@@ -1,4 +1,9 @@
 {
+  "createdAt": "2026-07-16T13:19:29.106Z",
+  "updatedAt": "2026-07-27T14:41:05.951Z",
+  "id": "UUkzhgEyCgAnQabY",
+  "name": "autolabel-gpt",
+  "active": false,
   "nodes": [
     {
       "parameters": {
@@ -16,7 +21,10 @@
       "id": "fba7ce8a-ad01-4754-b834-ffd2d3ac2b04",
       "name": "Gmail Trigger",
       "type": "n8n-nodes-base.gmailTrigger",
-      "position": [-736, 704],
+      "position": [
+        -736,
+        704
+      ],
       "typeVersion": 1.2,
       "credentials": {
         "gmailOAuth2": {
@@ -35,7 +43,10 @@
       "id": "d916d9ee-99a2-4275-a94c-8530e7b62b31",
       "name": "Gmail - read labels",
       "type": "n8n-nodes-base.gmailTool",
-      "position": [-304, 928],
+      "position": [
+        -304,
+        928
+      ],
       "webhookId": "d8ec9401-a9ff-4fe2-9c1e-5a8036cd96c9",
       "typeVersion": 2.1,
       "credentials": {
@@ -55,7 +66,10 @@
       "id": "5228f3cd-9e59-4190-92c5-ce17b84241aa",
       "name": "Gmail - get message",
       "type": "n8n-nodes-base.gmailTool",
-      "position": [-128, 928],
+      "position": [
+        -128,
+        928
+      ],
       "webhookId": "d8ec9401-a9ff-4fe2-9c1e-5a8036cd96c9",
       "typeVersion": 2.1,
       "credentials": {
@@ -76,7 +90,10 @@
       "id": "22c9e19e-14c6-460b-97c8-67b2944ee889",
       "name": "Gmail - add label to message",
       "type": "n8n-nodes-base.gmailTool",
-      "position": [80, 928],
+      "position": [
+        80,
+        928
+      ],
       "webhookId": "7a87b026-1c6e-40e1-a062-aefdd1af1585",
       "typeVersion": 2.1,
       "credentials": {
@@ -98,7 +115,10 @@
       "id": "1d1f58f9-ade3-49ef-982e-2543c34dc10a",
       "name": "Gmail - create label",
       "type": "n8n-nodes-base.gmailTool",
-      "position": [272, 928],
+      "position": [
+        272,
+        928
+      ],
       "webhookId": "d8ec9401-a9ff-4fe2-9c1e-5a8036cd96c9",
       "typeVersion": 2.1,
       "credentials": {
@@ -120,7 +140,10 @@
       "id": "48669ca6-4bed-4b4c-a613-6aadb3d01868",
       "name": "Gmail labelling agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
-      "position": [-448, 704],
+      "position": [
+        -448,
+        704
+      ],
       "notesInFlow": true,
       "retryOnFail": false,
       "typeVersion": 1.7,
@@ -135,7 +158,10 @@
       "id": "5e970d51-ac75-4e96-811f-d73265652b89",
       "name": "Window Buffer Memory",
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
-      "position": [-448, 928],
+      "position": [
+        -448,
+        928
+      ],
       "typeVersion": 1.3
     },
     {
@@ -145,7 +171,10 @@
       "id": "ab692209-ca59-4407-8203-82698b69be71",
       "name": "Wait",
       "type": "n8n-nodes-base.wait",
-      "position": [-608, 704],
+      "position": [
+        -608,
+        704
+      ],
       "webhookId": "2066b863-4526-40cf-90aa-82229895a73c",
       "typeVersion": 1.1
     },
@@ -156,7 +185,10 @@
       "id": "a26303f3-3ba7-48f3-89cc-467d5ec43f10",
       "name": "Sticky Note",
       "type": "n8n-nodes-base.stickyNote",
-      "position": [-1024, 672],
+      "position": [
+        -1024,
+        672
+      ],
       "typeVersion": 1
     },
     {
@@ -168,7 +200,10 @@
       "id": "915fc4e4-bad1-4715-bda7-ecf051f40360",
       "name": "Sticky Note1",
       "type": "n8n-nodes-base.stickyNote",
-      "position": [0, 0],
+      "position": [
+        0,
+        0
+      ],
       "typeVersion": 1
     },
     {
@@ -179,7 +214,10 @@
       "id": "d8152afa-542e-4c68-9586-adfd5fcf4a38",
       "name": "Sticky Note2",
       "type": "n8n-nodes-base.stickyNote",
-      "position": [-224, 1120],
+      "position": [
+        -224,
+        1120
+      ],
       "typeVersion": 1
     },
     {
@@ -190,7 +228,10 @@
       "id": "e99efebb-7f16-44f5-8ee1-282ecd4dd07d",
       "name": "Sticky Note3",
       "type": "n8n-nodes-base.stickyNote",
-      "position": [-960, 1040],
+      "position": [
+        -960,
+        1040
+      ],
       "typeVersion": 1
     },
     {
@@ -205,7 +246,10 @@
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
-      "position": [-624, 928],
+      "position": [
+        -624,
+        928
+      ],
       "id": "248b444d-2d07-4c51-9ee1-886bbf582fc8",
       "name": "OpenAI Chat Model",
       "credentials": {
@@ -306,9 +350,18 @@
       ]
     }
   },
-  "pinData": {},
-  "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "3f55899d61e9f0757f5fd34228c134c51356103eb4b39eee4e2a1670e5072098"
-  }
+  "settings": {},
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "45423f5c-7efc-4b14-afa1-9bed1d02bb47",
+  "triggerCount": 0,
+  "tags": [
+    {
+      "createdAt": "2026-07-16T13:24:18.164Z",
+      "updatedAt": "2026-07-16T13:24:18.164Z",
+      "id": "WSquITjwLZa5cGil",
+      "name": "email"
+    }
+  ]
 }

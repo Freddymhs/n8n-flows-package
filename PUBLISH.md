@@ -31,7 +31,7 @@ Debería mostrar tu username.
 # Ej: "1.0.1" → "1.0.2"
 
 # 2. Commit cambios
-git add .
+git add <archivos>
 git commit -m "v1.0.2: Descripción de cambios"
 
 # 3. Publicar

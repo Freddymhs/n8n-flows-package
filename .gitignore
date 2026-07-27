@@ -12,6 +12,7 @@ out/
 # Entornos
 .env
 .env.local
+.env.prod
 .env.*.local
 !.env.example
 

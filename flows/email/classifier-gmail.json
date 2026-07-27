@@ -1,4 +1,9 @@
 {
+  "createdAt": "2026-07-16T13:19:29.162Z",
+  "updatedAt": "2026-07-27T14:41:06.029Z",
+  "id": "DsnDU7A9wKsXIO8t",
+  "name": "classifier-gmail",
+  "active": false,
   "nodes": [
     {
       "parameters": {
@@ -17,7 +22,10 @@
       "name": "Gmail Trigger",
       "type": "n8n-nodes-base.gmailTrigger",
       "typeVersion": 1,
-      "position": [0, 304],
+      "position": [
+        0,
+        304
+      ],
       "credentials": {
         "gmailOAuth2": {
           "id": "wEOM7UHhMite5RMh",
@@ -34,7 +42,10 @@
       },
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
-      "position": [224, 304],
+      "position": [
+        224,
+        304
+      ],
       "id": "get-mail",
       "name": "Get Mail",
       "webhookId": "30d28ae3-6821-44fd-83ed-5c6f80b9722c",
@@ -55,7 +66,10 @@
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.8,
-      "position": [448, 304],
+      "position": [
+        448,
+        304
+      ],
       "id": "ai-filter",
       "name": "AI Filtro SPAM"
     },
@@ -66,7 +80,10 @@
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
-      "position": [448, 496],
+      "position": [
+        448,
+        496
+      ],
       "id": "gemini-filter",
       "name": "Gemini Filter",
       "credentials": {
@@ -90,7 +107,10 @@
       },
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [672, 304],
+      "position": [
+        672,
+        304
+      ],
       "id": "if-real",
       "name": "Es Real?"
     },
@@ -119,7 +139,10 @@
       "name": "Clasificar Tipo",
       "type": "@n8n/n8n-nodes-langchain.textClassifier",
       "typeVersion": 1,
-      "position": [880, 272]
+      "position": [
+        880,
+        272
+      ]
     },
     {
       "parameters": {
@@ -128,7 +151,10 @@
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
-      "position": [880, 480],
+      "position": [
+        880,
+        480
+      ],
       "id": "gemini-class",
       "name": "Gemini Classifier",
       "credentials": {
@@ -142,11 +168,16 @@
       "parameters": {
         "operation": "addLabels",
         "messageId": "={{ $(\"Get Mail\").item.json.id }}",
-        "labelIds": ["Label_4395206203694279265"]
+        "labelIds": [
+          "Label_4395206203694279265"
+        ]
       },
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
-      "position": [1200, 112],
+      "position": [
+        1200,
+        112
+      ],
       "id": "label-entrevista",
       "name": "Label Entrevista",
       "webhookId": "16cfe552-4110-4aa2-b990-cbe9eca40f41",
@@ -161,11 +192,16 @@
       "parameters": {
         "operation": "addLabels",
         "messageId": "={{ $(\"Get Mail\").item.json.id }}",
-        "labelIds": ["Label_4251077481646509784"]
+        "labelIds": [
+          "Label_4251077481646509784"
+        ]
       },
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
-      "position": [1328, 336],
+      "position": [
+        1328,
+        336
+      ],
       "id": "label-prueba",
       "name": "Label Prueba",
       "webhookId": "fa01dce1-02c6-4293-9cf9-9d94e7cd836f",
@@ -221,7 +257,10 @@
       },
       "type": "n8n-nodes-base.whatsApp",
       "typeVersion": 1,
-      "position": [1600, -144],
+      "position": [
+        1600,
+        -144
+      ],
       "id": "5d2c13cf-31d9-445b-8bd1-4c65a5f2cae7",
       "name": "WhatsApp Business Cloud4",
       "webhookId": "c98b2903-9c45-4c97-b23a-ddf17a6a56a1",
@@ -349,8 +388,18 @@
       ]
     }
   },
-  "pinData": {},
-  "meta": {
-    "instanceId": "3f55899d61e9f0757f5fd34228c134c51356103eb4b39eee4e2a1670e5072098"
-  }
+  "settings": {},
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "2f426ded-a8e8-4582-b9cd-8a6fcc09865a",
+  "triggerCount": 0,
+  "tags": [
+    {
+      "createdAt": "2026-07-16T13:24:18.164Z",
+      "updatedAt": "2026-07-16T13:24:18.164Z",
+      "id": "WSquITjwLZa5cGil",
+      "name": "email"
+    }
+  ]
 }

@@ -1,4 +1,9 @@
 {
+  "createdAt": "2026-07-16T13:19:29.318Z",
+  "updatedAt": "2026-07-27T14:41:06.241Z",
+  "id": "a01eGFlbKXlzRapv",
+  "name": "notifica-citas-medicas",
+  "active": false,
   "nodes": [
     {
       "parameters": {
@@ -8,7 +13,10 @@
       },
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [528, 0],
+      "position": [
+        528,
+        0
+      ],
       "id": "547714f4-176f-4bac-b5e8-f30c0710b73e",
       "name": "Telegram",
       "webhookId": "24a6e3e0-c259-49b2-a0da-82db3f9a3bd3",
@@ -25,7 +33,10 @@
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [320, 0],
+      "position": [
+        320,
+        0
+      ],
       "id": "8717e39b-ac0b-4391-b075-7caf35ec21f9",
       "name": "Citas Médicas"
     },
@@ -41,7 +52,10 @@
       },
       "type": "n8n-nodes-base.dateTime",
       "typeVersion": 2,
-      "position": [192, 0],
+      "position": [
+        192,
+        0
+      ],
       "id": "c78305ab-900d-48d0-ae30-29ab0d77a175",
       "name": "Date & Time1"
     },
@@ -57,7 +71,10 @@
       },
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
-      "position": [0, 0],
+      "position": [
+        0,
+        0
+      ],
       "id": "7dbd0a7a-c375-4e73-b0fe-4981a6f0c68d",
       "name": "daily",
       "notesInFlow": false,
@@ -99,8 +116,18 @@
       ]
     }
   },
-  "pinData": {},
-  "meta": {
-    "instanceId": "3f55899d61e9f0757f5fd34228c134c51356103eb4b39eee4e2a1670e5072098"
-  }
+  "settings": {},
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "6e096a03-02d3-47dd-a4df-43e6de78f365",
+  "triggerCount": 0,
+  "tags": [
+    {
+      "createdAt": "2026-07-16T13:24:18.515Z",
+      "updatedAt": "2026-07-16T13:24:18.515Z",
+      "id": "xZxKeJ7acpvFArjc",
+      "name": "notificaciones"
+    }
+  ]
 }

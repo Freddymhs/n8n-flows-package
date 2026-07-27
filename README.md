@@ -12,9 +12,13 @@ Workflows n8n como paquete npm reutilizable. Agrega flows a `flows/` y estarán 
 .
 ├── index.js                   # Carga automática de flows/*.json
 ├── flows/                     # Workflows (código embebido en JSONs)
-│   └── *.json
+│   ├── email/
+│   ├── notificaciones/
+│   ├── salud/
+│   └── todoist/
 ├── scripts/
-│   └── import-to-n8n.js       # Importar flows a n8n vía API
+│   ├── import-to-n8n.js       # Importar flows a n8n vía API
+│   └── pull-from-n8n.js       # Descargar workflows desde n8n
 ├── .env.example               # Template de configuración
 └── package.json
 ```
@@ -35,10 +39,10 @@ npm install @freddymhs/n8n-flows-packages
 // Importar todos los flows
 const flows = require("@freddymhs/n8n-flows-packages");
 
-console.log(Object.keys(flows)); // ['email_alert', 'email_claasifier', 'nutricionista', ...]
+console.log(Object.keys(flows)); // ['autolabel-gpt', 'classifier-gmail', 'coach-nutricionista', ...]
 
 // Acceder a un flow específico
-const { email_alert, nutricionista } = flows;
+const { 'autolabel-gpt': autolabel, 'coach-nutricionista': coach } = flows;
 ```
 
 Los flows se cargan automáticamente desde `flows/*.json`.
@@ -65,4 +69,4 @@ node scripts/import-to-n8n.js
 npm publish
 ```
 
-Consulta [PUBLISH.md](./PUBLISH.md) para más detalles sobre configuración de GitHub Packages.
+Consulta [PUBLISH.md](./PUBLISH.md) para más detalles sobre publicación en npmjs.com.

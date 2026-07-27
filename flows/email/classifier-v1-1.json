@@ -1,4 +1,9 @@
 {
+  "createdAt": "2026-07-16T13:19:29.207Z",
+  "updatedAt": "2026-07-27T14:41:06.101Z",
+  "id": "RvFfvcITFFHOWgCu",
+  "name": "classifier-v1-1",
+  "active": false,
   "nodes": [
     {
       "parameters": {
@@ -8,7 +13,10 @@
       "name": "Code Prueba Tecnica",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [2080, 1728]
+      "position": [
+        2080,
+        1728
+      ]
     },
     {
       "parameters": {
@@ -57,7 +65,10 @@
       "name": "WhatsApp Prueba Tecnica",
       "type": "n8n-nodes-base.whatsApp",
       "typeVersion": 1,
-      "position": [2304, 1728],
+      "position": [
+        2304,
+        1728
+      ],
       "webhookId": "061b37e5-4437-4895-8369-8741b6d9566f",
       "credentials": {
         "whatsAppApi": {
@@ -83,7 +94,10 @@
       "name": "GmailTrigger",
       "type": "n8n-nodes-base.gmailTrigger",
       "typeVersion": 1,
-      "position": [256, 1808],
+      "position": [
+        256,
+        1808
+      ],
       "credentials": {
         "gmailOAuth2": {
           "id": "wEOM7UHhMite5RMh",
@@ -98,7 +112,10 @@
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
-      "position": [1280, 2016],
+      "position": [
+        1280,
+        2016
+      ],
       "id": "f4e162b5-cb90-415d-9f23-416c1e88979e",
       "name": "Google Gemini Chat Model",
       "credentials": {
@@ -117,7 +134,10 @@
       },
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
-      "position": [432, 1808],
+      "position": [
+        432,
+        1808
+      ],
       "id": "44a79f3c-1131-447d-9f5e-8b48c21b138c",
       "name": "Get Mail5",
       "webhookId": "ab98d849-fb3e-44fc-99e7-7400ec781d0b",
@@ -132,11 +152,16 @@
       "parameters": {
         "operation": "addLabels",
         "messageId": "={{ $('Get Mail5').item.json.id }}",
-        "labelIds": ["Label_8313733782806021145"]
+        "labelIds": [
+          "Label_8313733782806021145"
+        ]
       },
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
-      "position": [2032, 2336],
+      "position": [
+        2032,
+        2336
+      ],
       "id": "c5674f48-5e62-4236-9986-f3103f7ad09f",
       "name": "n8n",
       "webhookId": "2dbdc08d-93fe-47a9-922c-ef639512e84e",
@@ -151,11 +176,16 @@
       "parameters": {
         "operation": "addLabels",
         "messageId": "={{ $('Get Mail5').item.json.id }}",
-        "labelIds": ["Label_5141060722224436222"]
+        "labelIds": [
+          "Label_5141060722224436222"
+        ]
       },
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
-      "position": [2048, 2192],
+      "position": [
+        2048,
+        2192
+      ],
       "id": "405bf666-504e-449a-8f25-d4a3ae68cd60",
       "name": "Voluntariado",
       "webhookId": "35850c76-9533-4df6-b6e3-5583e0ab3389",
@@ -170,11 +200,16 @@
       "parameters": {
         "operation": "addLabels",
         "messageId": "={{ $('Get Mail5').item.json.id }}",
-        "labelIds": ["Label_1019265470811267885"]
+        "labelIds": [
+          "Label_1019265470811267885"
+        ]
       },
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
-      "position": [1920, 2080],
+      "position": [
+        1920,
+        2080
+      ],
       "id": "54208a47-a844-44aa-88aa-5e997415714f",
       "name": "eventos tech",
       "webhookId": "cd1a719c-e936-4f08-9739-9ad111ec35f4",
@@ -189,11 +224,16 @@
       "parameters": {
         "operation": "addLabels",
         "messageId": "={{ $('Get Mail5').item.json.id }}",
-        "labelIds": ["Label_5047642296385366054"]
+        "labelIds": [
+          "Label_5047642296385366054"
+        ]
       },
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
-      "position": [1888, 2224],
+      "position": [
+        1888,
+        2224
+      ],
       "id": "a0309401-c95e-4a2d-883d-26aafac19af0",
       "name": "cursos",
       "webhookId": "5f751eea-4d96-4e16-8181-1f24f87dd111",
@@ -208,11 +248,16 @@
       "parameters": {
         "operation": "addLabels",
         "messageId": "={{ $('Get Mail5').item.json.id }}",
-        "labelIds": ["Label_4251077481646509784"]
+        "labelIds": [
+          "Label_4251077481646509784"
+        ]
       },
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
-      "position": [1888, 1728],
+      "position": [
+        1888,
+        1728
+      ],
       "id": "d4fc68dc-efe5-4d87-ac54-6297d3cf3444",
       "name": "Prueba tecnica",
       "webhookId": "79e3c172-c59a-4a79-b9cc-d61fb7c8b837",
@@ -227,11 +272,16 @@
       "parameters": {
         "operation": "addLabels",
         "messageId": "={{ $('Get Mail5').item.json.id }}",
-        "labelIds": ["Label_4395206203694279265"]
+        "labelIds": [
+          "Label_4395206203694279265"
+        ]
       },
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
-      "position": [1888, 1888],
+      "position": [
+        1888,
+        1888
+      ],
       "id": "8f10ef45-dcb9-4e36-84f8-040a2217bcf5",
       "name": "Entrevista",
       "webhookId": "fb164690-9d0f-494d-80f4-395db6c2c323",
@@ -248,7 +298,10 @@
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
       "typeVersion": 1,
-      "position": [1056, 2272],
+      "position": [
+        1056,
+        2272
+      ],
       "id": "fefd4fc4-6280-46be-851f-45e1b3e5bb08",
       "name": "Groq Chat Model",
       "credentials": {
@@ -268,7 +321,10 @@
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.8,
-      "position": [944, 1808],
+      "position": [
+        944,
+        1808
+      ],
       "id": "01a2e491-2ad6-46ab-9c23-2728c412aeba",
       "name": "ResumeGenerator"
     },
@@ -279,7 +335,10 @@
       "id": "c0de8d51-8ac0-4c47-847e-c1acb8affcc4",
       "name": "await 1 sec",
       "type": "n8n-nodes-base.wait",
-      "position": [592, 1808],
+      "position": [
+        592,
+        1808
+      ],
       "webhookId": "f4f1c210-f883-431e-834d-5dce01342b54",
       "typeVersion": 1.1
     },
@@ -289,7 +348,10 @@
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [752, 1808],
+      "position": [
+        752,
+        1808
+      ],
       "id": "81323f54-baa3-4349-883c-f563df264bd8",
       "name": "SimplifyJson"
     },
@@ -338,7 +400,10 @@
       },
       "type": "n8n-nodes-base.whatsApp",
       "typeVersion": 1,
-      "position": [2304, 1904],
+      "position": [
+        2304,
+        1904
+      ],
       "id": "cd2b87bd-a481-4829-b113-7aa4a0a3f06b",
       "name": "WhatsApp Business Cloud5",
       "webhookId": "55342ac2-6b6e-425b-8663-b32661489e58",
@@ -393,7 +458,10 @@
       "name": "ClassifyResume",
       "type": "@n8n/n8n-nodes-langchain.textClassifier",
       "typeVersion": 1,
-      "position": [1264, 1808]
+      "position": [
+        1264,
+        1808
+      ]
     },
     {
       "parameters": {
@@ -401,7 +469,10 @@
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [2080, 1904],
+      "position": [
+        2080,
+        1904
+      ],
       "id": "cd535bce-5eb3-412a-af8e-f3c9bb43b496",
       "name": "Code1"
     },
@@ -417,7 +488,10 @@
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
-      "position": [944, 2000],
+      "position": [
+        944,
+        2000
+      ],
       "id": "8deb15d8-f85e-45d4-84e8-df48d6bb687b",
       "name": "OpenAI Chat Model2",
       "credentials": {
@@ -439,7 +513,10 @@
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
-      "position": [768, 2048],
+      "position": [
+        768,
+        2048
+      ],
       "id": "04d8bd41-a446-465d-8b45-a1be1c5bf63b",
       "name": "OpenAI Chat Model3",
       "credentials": {
@@ -620,9 +697,18 @@
       ]
     }
   },
-  "pinData": {},
-  "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "3f55899d61e9f0757f5fd34228c134c51356103eb4b39eee4e2a1670e5072098"
-  }
+  "settings": {},
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "7444374e-375b-407f-82ff-6c6827c300b6",
+  "triggerCount": 0,
+  "tags": [
+    {
+      "createdAt": "2026-07-16T13:24:18.164Z",
+      "updatedAt": "2026-07-16T13:24:18.164Z",
+      "id": "WSquITjwLZa5cGil",
+      "name": "email"
+    }
+  ]
 }
