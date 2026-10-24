@@ -46,7 +46,7 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer 2221fb2205752157ae217b2ea8d9e56f6f974680"
+              "value": "=Bearer {{ $env.TODOIST_API_TOKEN }}"
             }
           ]
         },
@@ -70,7 +70,7 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer 2221fb2205752157ae217b2ea8d9e56f6f974680"
+              "value": "=Bearer {{ $env.TODOIST_API_TOKEN }}"
             }
           ]
         },
